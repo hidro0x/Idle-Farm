@@ -8,12 +8,12 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: SkyBoxMat
-  m_Shader: {fileID: 103, guid: 0000000000000000f000000000000000, type: 0}
+  m_Shader: {fileID: 4800000, guid: 6fc9318f5193c094c98c0d450cd61e3b, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords:
+  m_ValidKeywords:
   - _BACKGROUNDMODE_COLORS
+  m_InvalidKeywords:
   - _MAPPING_LATITUDE_LONGITUDE_LAYOUT
   - _SUNDISK_HIGH_QUALITY
   m_LightmapFlags: 4
@@ -169,7 +169,7 @@ Material:
     - _EnableStarsTwinkling: 0
     - _EnableSun: 0
     - _EnvironmentReflections: 1
-    - _EquatorHeight: 0.5
+    - _EquatorHeight: 0.453
     - _EquatorSmoothness: 0.5
     - _Exposure: 1
     - _FogCat: 1
@@ -228,10 +228,10 @@ Material:
     - _CloudsShadowColor: {r: 0.49803913, g: 0.7450981, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _EquatorColor: {r: 1, g: 0.747, b: 0, a: 1}
-    - _GroundColor: {r: 0.49803913, g: 0.49699998, b: 0, a: 1}
+    - _EquatorColor: {r: 0.33333334, g: 0.6627451, b: 1, a: 1}
+    - _GroundColor: {r: 0.33333334, g: 0.6627451, b: 1, a: 1}
     - _MoonColor: {r: 1, g: 1, b: 1, a: 1}
-    - _SkyColor: {r: 0.49803913, g: 0.7450981, b: 1, a: 1}
+    - _SkyColor: {r: 0.33490568, g: 0.6622568, b: 1, a: 1}
     - _SkyTint: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _SkyboxRotationAxis: {r: 0, g: 1, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
