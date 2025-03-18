@@ -8,16 +8,11 @@ public class Building : SerializedMonoBehaviour, IClickableObject
 {
     [field:SerializeField] public BuildingSO BuildingSO { get; private set; }
     public BuildingData Data {get; private set; }
-    private Collider _collider;
-
-    private void Awake()
-    {
-        _collider = GetComponent<Collider>();
-    }
+    private InfoSliderUI _infoUI;
 
     public void Tick(float tickValue)
     {
-        if(Data.IsProductionFinished(tickValue))ResourceController.OnResourceAddRequested.OnNext((BuildingSO.Resource, BuildingSO.OutputAmount));
+        if(Data.IsProductionFinished(tickValue))ResourceController.OnResourceAddRequested.OnNext((BuildingSO.ResourceSo, BuildingSO.OutputAmount));
     }
 
     public void AddToProductionOrder()
@@ -32,5 +27,5 @@ public class Building : SerializedMonoBehaviour, IClickableObject
         Data.RemoveFromCapacity(1);
     }
 
-    public void OnClick() => BuildingUI.OnBuildingUIRequested.OnNext((this, _collider.bounds.center));
+    public void OnClick() => ProductionButtonsUI.OnBuildingUIRequested.OnNext((this));
 }

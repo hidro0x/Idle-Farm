@@ -29,7 +29,7 @@ public class InfoSliderUI : MonoBehaviour
         
         _disposables.Clear();
         
-        resourceIconImage.sprite = buildingSO.Resource.Icon;
+        resourceIconImage.sprite = buildingSO.ResourceSo.Icon;
         
         data.CurrentCapacity
             .Subscribe(capacity => {

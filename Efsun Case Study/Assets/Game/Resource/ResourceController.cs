@@ -8,7 +8,7 @@ public class ResourceController : MonoBehaviour
 {
     private Dictionary<int, ReactiveProperty<int>> _resources;
     
-    public static readonly Subject<(Resource resource, int amount)> OnResourceAddRequested = new Subject<(Resource, int)>();
+    public static readonly Subject<(ResourceSO resource, int amount)> OnResourceAddRequested = new Subject<(ResourceSO, int)>();
 
     private IDisposable _resourceAddSubscription;
 
@@ -23,18 +23,18 @@ public class ResourceController : MonoBehaviour
         _resourceAddSubscription?.Dispose();
     }
 
-    private void AddResource(Resource resource, int amountToAdd)
+    private void AddResource(ResourceSO resourceSo, int amountToAdd)
     {
-        _resources[resource.ID].Value += amountToAdd;
+        _resources[resourceSo.ID].Value += amountToAdd;
     }
     
-    private void RemoveResource(Resource resource, int amountToRemove)
+    private void RemoveResource(ResourceSO resourceSo, int amountToRemove)
     {
-        _resources[resource.ID].Value -= amountToRemove;
+        _resources[resourceSo.ID].Value -= amountToRemove;
     }
 
-    public int GetResourceAmount(Resource resource)
+    public int GetResourceAmount(ResourceSO resourceSo)
     {
-        return _resources[resource.ID].Value;
+        return _resources[resourceSo.ID].Value;
     }
 }

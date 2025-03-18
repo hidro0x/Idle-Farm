@@ -9,14 +9,17 @@ using UnityEngine;
 public class BuildingSO : SerializedScriptableObject
 {
     [SerializeField] private int id;
-
-    [SerializeField] private Resource resource;
+    
+    [PreviewField(100, ObjectFieldAlignment.Center)]
+    [SerializeField] private GameObject buildingPrefab;
+    [SerializeField] private ResourceSO resourceSo;
     [SerializeField] private int baseCapacity;
     [SerializeField] private float baseProductionTime;
     [SerializeField] private int productionRequirementAmount;
     [SerializeField] private int productionOutputAmount;
 
-    public Resource Resource => resource;
+    public int ID => id;
+    public ResourceSO ResourceSo => resourceSo;
     public int Capacity => baseCapacity;
     public float ProductionTime => baseProductionTime;
     public int RequiredAmount => productionRequirementAmount;
