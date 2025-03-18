@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using UniRx;
 using UnityEngine;
 
 
@@ -26,24 +27,25 @@ public class BuildingSO : SerializedScriptableObject
 [System.Serializable]
 public class BuildingData
 {
-    public int CurrentCapacity { get; private set; }
-    public float TimeLeft { get; private set; }
-
+    public ReactiveProperty<int> CurrentCapacity { get; } = new ReactiveProperty<int>();
+    public ReactiveProperty<float> TimeLeft { get; } = new ReactiveProperty<float>();
+    public ReactiveProperty<int> CurrentResourceAmount { get; } = new ReactiveProperty<int>();
     public BuildingData(int currentCapacity, float timeLeft)
     {
-        CurrentCapacity = currentCapacity;
-        TimeLeft = timeLeft;
+        CurrentCapacity.Value = currentCapacity;
+        TimeLeft.Value = timeLeft;
     }
 
-    public void AddToCapacity(int amount) => CurrentCapacity += amount;
-    public void RemoveFromCapacity(int amount) => CurrentCapacity -= amount;
+    public void AddToCapacity(int amount) => CurrentCapacity.Value += amount;
+    public void RemoveFromCapacity(int amount) => CurrentCapacity.Value -= amount;
 
     public bool IsProductionFinished(float tickValue)
     {
-        if (CurrentCapacity <= 0) return false;
-        TimeLeft -= tickValue;
-        if (TimeLeft >= 0) return false;
-        CurrentCapacity--;
+        if (CurrentCapacity.Value <= 0) return false;
+        TimeLeft.Value -= tickValue;
+        if (TimeLeft.Value >= 0) return false;
+        CurrentCapacity.Value--;
+        CurrentResourceAmount.Value++;
         return true;
 
     }

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class ResourceController : MonoBehaviour
 {
-    private Dictionary<int, int> _resources;
+    private Dictionary<int, ReactiveProperty<int>> _resources;
     
     public static readonly Subject<(Resource resource, int amount)> OnResourceAddRequested = new Subject<(Resource, int)>();
 
@@ -25,16 +25,16 @@ public class ResourceController : MonoBehaviour
 
     private void AddResource(Resource resource, int amountToAdd)
     {
-        _resources[resource.ID] += amountToAdd;
+        _resources[resource.ID].Value += amountToAdd;
     }
     
     private void RemoveResource(Resource resource, int amountToRemove)
     {
-        _resources[resource.ID] -= amountToRemove;
+        _resources[resource.ID].Value -= amountToRemove;
     }
 
     public int GetResourceAmount(Resource resource)
     {
-        return _resources[resource.ID];
+        return _resources[resource.ID].Value;
     }
 }

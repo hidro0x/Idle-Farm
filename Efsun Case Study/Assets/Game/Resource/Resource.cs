@@ -9,6 +9,8 @@ public class Resource : SerializedScriptableObject
     [SerializeField] private string name;
     [SerializeField] private Sprite icon;
 
+    public string Name => name;
     public int ID => id;
+    public Sprite Icon => icon;
 
 }
