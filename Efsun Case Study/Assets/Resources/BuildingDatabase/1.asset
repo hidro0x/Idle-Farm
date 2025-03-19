@@ -21,11 +21,14 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  id: 1
-  buildingPrefab: {fileID: 919132149155446097, guid: e62e7af20a2274bb8a69fb3d2394dfe3,
+  <Id>k__BackingField: 1
+  <IsGenerator>k__BackingField: 1
+  <BuildingPrefab>k__BackingField: {fileID: 3573015413748600977, guid: 444fdb4fc89b9411aa4138a28e82b64d,
     type: 3}
-  resourceSo: {fileID: 11400000, guid: b327d2e87978e0949b25a4e14e276348, type: 2}
-  baseCapacity: 10
-  baseProductionTime: 10
-  productionRequirementAmount: 0
-  productionOutputAmount: 1
+  <OutputResource>k__BackingField: {fileID: 11400000, guid: b327d2e87978e0949b25a4e14e276348,
+    type: 2}
+  <InputResource>k__BackingField: {fileID: 0}
+  <BaseCapacity>k__BackingField: 5
+  <BaseProductionTime>k__BackingField: 1
+  <BaseProductionInputAmount>k__BackingField: 0
+  <BaseProductionOutputAmount>k__BackingField: 3

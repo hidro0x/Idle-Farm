@@ -439,8 +439,8 @@ MonoBehaviour:
   camZoomMax: 13
   camOverzoomMargin: 1
   camOverdragMargin: 5
-  boundaryMin: {x: -50, y: -50}
-  boundaryMax: {x: 50, y: 50}
+  boundaryMin: {x: -100, y: -100}
+  boundaryMax: {x: 100, y: 100}
   camFollowFactor: 15
   autoScrollDampMode: 0
   autoScrollDamp: 300
@@ -721,8 +721,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 775580282}
-  - component: {fileID: 775580281}
-  - component: {fileID: 775580280}
+  - component: {fileID: 775580283}
   m_Layer: 0
   m_Name: Controllers
   m_TagString: Untagged
@@ -730,39 +729,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &775580280
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 775580279}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 854a2931b22d2b84b8408a7343d519d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
---- !u!114 &775580281
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 775580279}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76210f47db628ab4894a872b7d57b7f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &775580282
 Transform:
   m_ObjectHideFlags: 0
@@ -778,6 +744,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &775580283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 775580279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2db2c370c39580841bf618790984fa60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -858,9 +836,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameSettings: {fileID: 11400000, guid: 2967baefdc1b78341ba02f521e546a05, type: 2}
-  timeController: {fileID: 775580281}
-  buildingController: {fileID: 775580280}
-  infoSliderUI: {fileID: 0}
+  resourceBarsTransform: {fileID: 125354829}
+  infoSliderUI: {fileID: 1563758649630693591, guid: 681c774750eba3d4b8694ef763b4bc7e,
+    type: 3}
+  resourceBarUI: {fileID: 5999288939053194825, guid: fb6f43c254c5b3149a1c6e77b082a663,
+    type: 3}
 --- !u!114 &1580677370
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1020,10 +1000,22 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1792318282867290827, guid: 6792bd3c10ef4534aa377f74d7d97827,
         type: 3}
+      propertyPath: attachedBuilding
+      value: 
+      objectReference: {fileID: 11400000, guid: 9bae79ddffadfe54e9394ba74e642e58,
+        type: 2}
+    - target: {fileID: 1792318282867290827, guid: 6792bd3c10ef4534aa377f74d7d97827,
+        type: 3}
       propertyPath: serializationData.Prefab
       value: 
       objectReference: {fileID: 1792318282867290827, guid: 6792bd3c10ef4534aa377f74d7d97827,
         type: 3}
+    - target: {fileID: 1792318282867290827, guid: 6792bd3c10ef4534aa377f74d7d97827,
+        type: 3}
+      propertyPath: <BuildingSO>k__BackingField
+      value: 
+      objectReference: {fileID: 11400000, guid: 9bae79ddffadfe54e9394ba74e642e58,
+        type: 2}
     - target: {fileID: 2492583065642067310, guid: 6792bd3c10ef4534aa377f74d7d97827,
         type: 3}
       propertyPath: m_LocalPosition.x

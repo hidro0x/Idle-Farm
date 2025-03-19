@@ -35,7 +35,7 @@ public class InfoSliderUI : MonoBehaviour
         
         resourceIconImage.sprite = building.OutputResource.Icon;
         
-        building.CurrentCapacity
+        building.CurrentOrderCapacity
             .Subscribe(capacity => {
                 productionCountText.text = $"{capacity}/{building.MaxCapacity}";
             })
@@ -44,8 +44,16 @@ public class InfoSliderUI : MonoBehaviour
         building.TimeLeft
             .Subscribe(time =>
             {
-                productionTimeText.text = $"{time:0.0} sn";
-                _slider.value = time / building.ProductionTime;
+                if (building.CurrentOrderCapacity.Value > 0)
+                {
+                    productionTimeText.text = $"{time:0.0} sn";
+                    _slider.value = time / building.ProductionTime;
+                }
+                else
+                {
+                    _slider.value = 1;
+                    productionCountText.text = "Waiting for order...";
+                }
             })
             .AddTo(_disposables);
         

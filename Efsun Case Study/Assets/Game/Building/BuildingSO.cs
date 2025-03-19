@@ -22,7 +22,7 @@ public class BuildingSO : SerializedScriptableObject
     [field:Title("Resources")]
     [field: Required("Can not be empty.")]
     [field: SerializeField] public ResourceSO OutputResource { get; private set; }
-    [field: HideIf("isGenerator")]
+    [field: HideIf("IsGenerator")]
     [field: Required("Can not be empty.")]
     [field: SerializeField] public ResourceSO InputResource { get; private set; }
 
@@ -31,7 +31,7 @@ public class BuildingSO : SerializedScriptableObject
     [field: SerializeField] public int BaseCapacity { get; private set; }
     [field: MinValue(1)] 
     [field: SerializeField] public float BaseProductionTime { get; private set; }
-    [field: HideIf("isGenerator")]
+    [field: HideIf("IsGenerator")]
     [field: MinValue(1)] 
     [field: SerializeField] public int BaseProductionInputAmount { get; private set; }
     [field: MinValue(1)] 
@@ -40,7 +40,7 @@ public class BuildingSO : SerializedScriptableObject
     
     private bool IsOverCapacity(int num)
     {
-        return BaseProductionOutputAmount < BaseCapacity;
+        return BaseProductionOutputAmount <= BaseCapacity;
     }
 
     private void SetAsGenerator()
@@ -56,7 +56,7 @@ public class Building
 {
     private BuildingSO _info;
     
-    public ReactiveProperty<int> CurrentCapacity { get; } = new ReactiveProperty<int>();
+    public ReactiveProperty<int> CurrentOrderCapacity { get; } = new ReactiveProperty<int>();
     public ReactiveProperty<float> TimeLeft { get; } = new ReactiveProperty<float>();
     public ReactiveProperty<int> CurrentResourceAmount { get; } = new ReactiveProperty<int>();
 
@@ -75,41 +75,48 @@ public class Building
     {
         _info = buildingSo;
     }
-    private void AddToCapacity(int amount) => CurrentCapacity.Value += amount;
-    private void RemoveFromCapacity(int amount) => CurrentCapacity.Value -= amount;
+    private void AddToCapacity(int amount) => CurrentOrderCapacity.Value += amount;
+    private void RemoveFromCapacity(int amount) => CurrentOrderCapacity.Value -= amount;
     public void Tick(float tickValue)
     {
-        if(IsProductionFinished(tickValue))ResourceController.OnResourceAddRequested.OnNext((OutputResource, OutputAmount));
+        if (TimeLeft.Value - tickValue < 0)
+        {
+            FinishProduction();
+        }
+        else TimeLeft.Value -= tickValue;
     }
     
     public void AddToProductionOrder()
     {
-        if(CurrentCapacity.Value + 1 > MaxCapacity) return;
+        if(CurrentOrderCapacity.Value + 1 > MaxCapacity) return;
         AddToCapacity(1);
     }
     
     public void RemoveFromProductionOrder()
     {
-        if(CurrentCapacity.Value - 1 < 0) return;
+        if(CurrentOrderCapacity.Value - 1 < 0) return;
         RemoveFromCapacity(1);
     }
     public int CollectResource()
     {
-        var amount = CurrentCapacity.Value;
-        CurrentCapacity.Value = 0;
+        var amount = CurrentOrderCapacity.Value;
+        CurrentOrderCapacity.Value = 0;
         return amount;
     }
 
-    public bool IsProductionFinished(float tickValue)
+    private void FinishProduction()
     {
-        if (CurrentCapacity.Value <= 0) return false;
-        TimeLeft.Value -= tickValue;
-        if (TimeLeft.Value >= 0) return false;
-        TimeLeft.Value = 0;
-        CurrentCapacity.Value--;
-        CurrentResourceAmount.Value++;
-        return true;
-
+        CurrentOrderCapacity.Value--;
+        CurrentResourceAmount.Value += OutputAmount;
+        ResourceController.OnResourceAddRequested.OnNext((OutputResource, OutputAmount));
+        StartProduction();
+    }
+    
+    
+    public void StartProduction()
+    {
+        if(CurrentOrderCapacity.Value <= 0) return;
+        TimeLeft.Value = ProductionTime;
     }
 
     public void Interact(BuildingObject buildingObject)
