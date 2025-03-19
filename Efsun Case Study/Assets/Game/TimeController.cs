@@ -3,20 +3,17 @@ using UniRx;
 using System;
 using Zenject;
 
-public class TimeController : MonoBehaviour
+public class TimeController 
 {
-    private float _tickValue;
+    public float TickValue { get; private set; }
     public IObservable<float> OnTick { get; private set; }
 
     [Inject]
     public void Construct(GameSettings gameSettings)
     {
-        _tickValue = gameSettings.TickValue;
+        TickValue = gameSettings.TickValue;
+        OnTick = Observable.Interval(TimeSpan.FromSeconds(1))
+            .Select(_ => TickValue).Publish().RefCount();
     }
     
-    void Start()
-    {
-        OnTick = Observable.Interval(TimeSpan.FromSeconds(1))
-            .Select(_ => _tickValue).Publish().RefCount();
-    }
 }

@@ -5,32 +5,10 @@ using Zenject;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public class BuildingController : SerializedMonoBehaviour
+public class BuildingController 
 {
     private readonly List<Building> _buildings = new List<Building>();
-    private TimeController _timeController;
-
-    [Inject]
-    public void Construct(TimeController timeController)
-    {
-        _timeController = timeController;
-    }
-
-    private void Start()
-    {
-        _timeController.OnTick
-            .Subscribe(TickBuildings)
-            .AddTo(this);
-    }
-
-    private void TickBuildings(float tickValue)
-    {
-        foreach (var building in _buildings)
-        {
-            building.Tick(tickValue);
-        }
-    }
-
+    
     public void AddBuilding(Building building)
     {
         if (!_buildings.Contains(building))

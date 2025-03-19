@@ -9,16 +9,16 @@ public class GameInstaller : MonoInstaller
     [SerializeField]private GameSettings gameSettings;
     
     //Mono's
-    [SerializeField]private TimeController timeController;
-    [SerializeField]private BuildingController buildingController;
+    private TimeController timeController;
+    private BuildingController buildingController;
     
     //Prefabs
     [SerializeField]private InfoSliderUI infoSliderUI;
 
     public override void InstallBindings()
     {
-        Container.Bind<TimeController>().FromInstance(timeController).AsSingle();
-        Container.Bind<BuildingController>().FromInstance(buildingController).AsSingle();
+        Container.Bind<TimeController>().AsSingle();
+        Container.Bind<BuildingController>().AsSingle();
         Container.BindFactory<InfoSliderUI, InfoSliderUIFactory>().FromComponentInNewPrefab(infoSliderUI).AsTransient();
         Container.Bind<GameSettings>().FromScriptableObject(gameSettings).AsSingle();
     }

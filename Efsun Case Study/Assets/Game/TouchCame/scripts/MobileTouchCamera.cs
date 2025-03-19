@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
+using UniRx;
 
 namespace YigitDurmus {
 
@@ -467,6 +468,7 @@ namespace YigitDurmus {
       }
     }
 
+    public static readonly Subject<Unit> OnClickedOut = new Subject<Unit>();
     public void Start() {
       touchInputController.OnInputClick += InputControllerOnInputClick;
       touchInputController.OnDragStart += InputControllerOnDragStart;
@@ -1398,6 +1400,10 @@ namespace YigitDurmus {
               OnPickItemDoubleClick.Invoke(hitInfo);
             }
           }
+        }
+        else
+        {
+          OnClickedOut.OnNext(Unit.Default);
         }
       }
       if (OnPickItem2D != null || OnPickItem2DDoubleClick != null) {

@@ -4,40 +4,58 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Zenject;
+using UniRx;
 
 public class Building : SerializedMonoBehaviour, IClickableObject
 {
-    [field:SerializeField] public BuildingSO BuildingSO { get; private set; }
-    public BuildingData Data {get; private set; }
+    [field: SerializeField] public BuildingSO BuildingSO { get; private set; }
+    public BuildingStats Stats {get; private set; }
     public InfoSliderUI InfoUI {get; private set; }
 
+    private IDisposable _timeSubscription;
+    
     [Inject]
-    public void Init(BuildingController controller, InfoSliderUIFactory infoSliderUIFactory)
+    public void Init(BuildingController buildingController,TimeController timeController, InfoSliderUIFactory infoSliderUIFactory)
     {
-        controller.AddBuilding(this);
-
+        buildingController.AddBuilding(this);
+        
+        _timeSubscription = timeController.OnTick
+            //Linq daha maliyetli olabileceginden gerek duymadim fakaStatusunun scaleine gore degisir
+            //.Where(_ => Data.CurrentCapacity.Value > 0)
+            .Subscribe(Tick) 
+            .AddTo(this);
+        
         Instantiate(BuildingSO.Prefab, transform.GetChild(0));
-        Data = new BuildingData();
+        Stats = new BuildingStats();
         InfoUI = infoSliderUIFactory.Create();
         InfoUI.Init(this);
     }
 
     public void Tick(float tickValue)
     {
-        if(Data.IsProductionFinished(tickValue))ResourceController.OnResourceAddRequested.OnNext((BuildingSO.ResourceSo, BuildingSO.OutputAmount));
+        if(Stats.IsProductionFinished(tickValue))ResourceController.OnResourceAddRequested.OnNext((BuildingSO.Resource, BuildingSO.OutputAmount));
     }
 
     public void AddToProductionOrder()
     {
-        if(Data.CurrentCapacity.Value + 1 > BuildingSO.Capacity) return;
-        Data.AddToCapacity(1);
+        if(Stats.CurrentCapacity.Value + 1 > BuildingSO.Capacity) return;
+        Stats.AddToCapacity(1);
     }
     
     public void RemoveFromProductionOrder()
     {
-        if(Data.CurrentCapacity.Value - 1 < 0) return;
-        Data.RemoveFromCapacity(1);
+        if(Stats.CurrentCapacity.Value - 1 < 0) return;
+        Stats.RemoveFromCapacity(1);
     }
 
-    public void OnClicked() => ProductionButtonsUI.OnBuildingUIRequested.OnNext(this);
+    public void OnClicked()
+    {
+        if(BuildingSO.Capacity == 0) return;
+        ProductionButtonsUI.OnBuildingUIRequested.OnNext(this);
+    }
+    
+    private void CollectResources()
+    {
+        ResourceController.OnResourceAddRequested.OnNext((BuildingSO.Resource, Stats.CollectResource()));
+    }
 }

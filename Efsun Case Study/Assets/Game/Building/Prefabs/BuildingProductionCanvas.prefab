@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1444446029464468923}
-  - component: {fileID: 927686392513638702}
   m_Layer: 5
   m_Name: BuildingPanel
   m_TagString: Untagged
@@ -38,22 +37,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &927686392513638702
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 322397997819665181}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b553b4d884f7394fb9cd1e3b9b23292, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startProductionButton: {fileID: 4437408020575710900}
-  removeProductionButton: {fileID: 2655913021026030698}
-  resourceIcon: {fileID: 0}
-  resourceRequiredAmountText: {fileID: 0}
 --- !u!1 &2053134674621359071
 GameObject:
   m_ObjectHideFlags: 0
@@ -534,6 +517,7 @@ GameObject:
   - component: {fileID: 3689899239044367176}
   - component: {fileID: 2184429949206227804}
   - component: {fileID: 988598532439606492}
+  - component: {fileID: 1278690538860336759}
   m_Layer: 5
   m_Name: BuildingProductionCanvas
   m_TagString: Untagged
@@ -606,7 +590,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &988598532439606492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -624,6 +608,22 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 55
+--- !u!114 &1278690538860336759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6967381733344587109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b553b4d884f7394fb9cd1e3b9b23292, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startProductionButton: {fileID: 4437408020575710900}
+  removeProductionButton: {fileID: 2655913021026030698}
+  resourceIcon: {fileID: 5811542656464743991}
+  resourceRequiredAmountText: {fileID: 893858435535174091}
 --- !u!1 &7696928391797147287
 GameObject:
   m_ObjectHideFlags: 0

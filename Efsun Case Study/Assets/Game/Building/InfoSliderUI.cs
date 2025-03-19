@@ -31,11 +31,11 @@ public class InfoSliderUI : MonoBehaviour
     public void Init(Building building)
     {
         var buildingSO = building.BuildingSO;
-        var data = building.Data;
+        var data = building.Stats;
         
         _disposables.Clear();
         
-        resourceIconImage.sprite = buildingSO.ResourceSo.Icon;
+        resourceIconImage.sprite = buildingSO.Resource.Icon;
         
         data.CurrentCapacity
             .Subscribe(capacity => {

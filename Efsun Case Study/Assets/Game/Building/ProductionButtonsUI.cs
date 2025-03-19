@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using TMPro;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
+using YigitDurmus;
 
 public class ProductionButtonsUI : MonoBehaviour
 {
@@ -13,8 +15,8 @@ public class ProductionButtonsUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI resourceRequiredAmountText;
     
     public static readonly Subject<Building> OnBuildingUIRequested = new Subject<Building>();
-    
-    private IDisposable _resourceAddSubscription;
+
+    private readonly CompositeDisposable _disposables = new CompositeDisposable();
 
     private RectTransform _rect;
     private Canvas _canvas;
@@ -27,13 +29,18 @@ public class ProductionButtonsUI : MonoBehaviour
     
     private void OnEnable()
     {
-        _resourceAddSubscription = OnBuildingUIRequested
-            .Subscribe(Open);
+        MobileTouchCamera.OnClickedOut
+            .Subscribe(_ => Close()) // Paneli kapat
+            .AddTo(_disposables);
+
+        OnBuildingUIRequested
+            .Subscribe(Open)
+            .AddTo(_disposables);
     }
 
     private void OnDisable()
     {
-        _resourceAddSubscription?.Dispose();
+        _disposables?.Clear();
     }
     
 
@@ -42,11 +49,11 @@ public class ProductionButtonsUI : MonoBehaviour
         startProductionButton.onClick.AddListener(building.AddToProductionOrder);
         removeProductionButton.onClick.AddListener(building.RemoveFromProductionOrder);
 
-        _canvas.enabled = true;
         _rect.position = building.InfoUI.Rect.position;
-        
+        _canvas.enabled = true;
+
         var buildingSo = building.BuildingSO;
-        resourceIcon.sprite = buildingSo.ResourceSo.Icon;
+        resourceIcon.sprite = buildingSo.Resource.Icon;
         resourceRequiredAmountText.SetText($"x{buildingSo.RequiredAmount}");
     }
     

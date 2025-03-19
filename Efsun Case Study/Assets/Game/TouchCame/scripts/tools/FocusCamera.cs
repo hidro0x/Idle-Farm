@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
+using UniRx;
 
 namespace YigitDurmus
 {
@@ -12,7 +13,7 @@ namespace YigitDurmus
     /// or mobile picking controller.
     /// </summary>
     [RequireComponent(typeof(MobileTouchCamera))]
-    public class FocusCameraOnItem : MonoBehaviourWrapped
+    public class FocusCamera : MonoBehaviourWrapped
     {
 
         [SerializeField]
@@ -45,23 +46,15 @@ namespace YigitDurmus
 
         private float zoomAmount;
         public Transform moveToObject;
+        
 
-        public static Action<Transform> OnZoomRequested;
-        public static Action OnZoomOutRequested;
         public void Awake()
         {
             MobileTouchCamera = GetComponent<MobileTouchCamera>();
             isTransitionStarted = false;
             zoomAmount = MobileTouchCamera.CamZoomMin + 2;
-            OnZoomOutRequested += ZoomOut;
-            OnZoomRequested += FocusCameraOnTarget;
         }
-
-        private void OnDisable()
-        {
-            OnZoomOutRequested -= ZoomOut;
-            OnZoomRequested -= FocusCameraOnTarget;
-        }
+        
 
 
         public void LateUpdate()
@@ -120,15 +113,16 @@ namespace YigitDurmus
         public void OnPickItem(RaycastHit hitInfo)
         {
             IClickableObject clickable = hitInfo.transform.gameObject.GetComponent<IClickableObject>();
-            if (clickable != null && hitInfo.transform.gameObject.CompareTag("Zoomable"))
+            if (clickable != null)
             {
-                if (isFocusingToTarget) return;
                 clickable.OnClicked();
-                FocusCameraOnTransform(hitInfo.transform);
-            } else
-            {
-                clickable?.OnClicked();
+                if (hitInfo.transform.gameObject.CompareTag("Zoomable"))
+                {
+                    if (isFocusingToTarget) return;
+                    FocusCameraOnTransform(hitInfo.transform);
+                }
             }
+
         }
 
         public void OnPickItem2D(RaycastHit2D hitInfo2D)
