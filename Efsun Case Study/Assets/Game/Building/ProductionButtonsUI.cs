@@ -47,10 +47,14 @@ public class ProductionButtonsUI : MonoBehaviour
 
     private void Open(BuildingObject buildingObject)
     {
-        if(IsOpen) return;
+        if (IsOpen)
+        {
+            buildingObject.Building.CollectResource();
+            return;
+        }
         
-        startProductionButton.onClick.AddListener(buildingObject.Building.AddToProductionOrder);
-        removeProductionButton.onClick.AddListener(buildingObject.Building.RemoveFromProductionOrder);
+        startProductionButton.onClick.AddListener(buildingObject.Building.AddOrder);
+        removeProductionButton.onClick.AddListener(buildingObject.Building.RemoveOrder);
 
         _rect.position = buildingObject.InfoUI.Rect.position;
         _canvas.enabled = true;

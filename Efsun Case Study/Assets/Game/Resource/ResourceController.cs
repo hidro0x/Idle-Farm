@@ -6,36 +6,28 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-public class ResourceController : MonoBehaviour
+public class ResourceController : IDisposable
 {
-    private Dictionary<ResourceSO, ReactiveProperty<int>> _resources = new Dictionary<ResourceSO, ReactiveProperty<int>>();
-    
+    private Dictionary<ResourceSO, ReactiveProperty<int>> _resources = new();
+    private readonly IDisposable _resourceAddSubscription;
     public static readonly Subject<(ResourceSO resource, int amount)> OnResourceAddRequested = new Subject<(ResourceSO, int)>();
-
-    private IDisposable _resourceAddSubscription;
+    public Dictionary<ResourceSO, ReactiveProperty<int>> Resources => _resources;
 
     [Inject]
-    public void Construct(GameSettings settings, HorizontalLayoutGroup spawnTransform, ResourceBarUI prefab)
+    public ResourceController(GameSettings settings)
     {
         foreach (var resource in settings.Resources)
         {
-            var kvp = new KeyValuePair<ResourceSO, ReactiveProperty<int>>(resource.Key, new ReactiveProperty<int>());
-            _resources.Add(kvp.Key, kvp.Value);
-            _resources[resource.Key].Value = resource.Value;
-            var slot =Instantiate(prefab, spawnTransform.transform);
-            slot.Init(kvp);
+            _resources.Add(resource.Key, new ReactiveProperty<int>(resource.Value));
         }
-    }
 
-    private void OnEnable()
-    {
         _resourceAddSubscription = OnResourceAddRequested
             .Subscribe(tuple => AddResource(tuple.resource, tuple.amount));
     }
 
-    private void OnDisable()
+    public void Dispose()
     {
-        _resourceAddSubscription?.Dispose();
+        _resourceAddSubscription.Dispose(); 
     }
 
     private void AddResource(ResourceSO resource, int amountToAdd)

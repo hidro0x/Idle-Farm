@@ -119,6 +119,7 @@ MonoBehaviour:
   productionCountText: {fileID: 7614960529832742312}
   productionTimeText: {fileID: 2566178035700161655}
   resourceCountText: {fileID: 1786628746704867089}
+  slider: {fileID: 3263369133927722899}
 --- !u!1001 &2841722945081032264
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -282,6 +283,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3263369133927722899 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 731275397770891739, guid: f787f1b1c60e0594e9e4c2f5431123a7,
+    type: 3}
+  m_PrefabInstance: {fileID: 2841722945081032264}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!224 &3875301185584788054 stripped

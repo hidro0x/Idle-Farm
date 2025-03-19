@@ -11,7 +11,7 @@ public class InfoSliderUI : MonoBehaviour
 {
     [SerializeField] private Image resourceIconImage;
     [SerializeField] private TextMeshProUGUI productionCountText, productionTimeText, resourceCountText;
-    private Slider _slider;
+    [SerializeField]private Slider slider;
     
     public RectTransform Rect { get; private set; }
     private Canvas _canvas;
@@ -20,7 +20,6 @@ public class InfoSliderUI : MonoBehaviour
 
     private void Awake()
     {
-        _slider = GetComponentInChildren<Slider>();
         Rect = GetComponent<RectTransform>();
         _canvas = GetComponent<Canvas>();
     }
@@ -32,27 +31,35 @@ public class InfoSliderUI : MonoBehaviour
     {
 
         _disposables.Clear();
-        
+
         resourceIconImage.sprite = building.OutputResource.Icon;
         
         building.CurrentOrderCapacity
             .Subscribe(capacity => {
-                productionCountText.text = $"{capacity}/{building.MaxCapacity}";
+                if (building.CurrentOrderCapacity.Value > 0)
+                {
+                    productionCountText.text = $"{capacity}/{building.MaxCapacity}";
+                }
+                else
+                {
+                    productionCountText.text = String.Empty;
+                }
+                
             })
             .AddTo(_disposables);
         
         building.TimeLeft
             .Subscribe(time =>
             {
-                if (building.CurrentOrderCapacity.Value > 0)
+                if (building.TimeLeft.Value > 0)
                 {
                     productionTimeText.text = $"{time:0.0} sn";
-                    _slider.value = time / building.ProductionTime;
+                    slider.value = time / building.ProductionTime;
                 }
                 else
                 {
-                    _slider.value = 1;
-                    productionCountText.text = "Waiting for order...";
+                    slider.value = 1;
+                    productionTimeText.text = String.Empty;
                 }
             })
             .AddTo(_disposables);
@@ -78,4 +85,3 @@ public class InfoSliderUI : MonoBehaviour
     }
 }
 
-public class InfoSliderUIFactory : PlaceholderFactory<InfoSliderUI> { }

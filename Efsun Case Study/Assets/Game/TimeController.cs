@@ -9,7 +9,7 @@ public class TimeController
     public IObservable<float> OnTick { get; private set; }
 
     [Inject]
-    public void Construct(GameSettings gameSettings)
+    public TimeController(GameSettings gameSettings)
     {
         TickValue = gameSettings.TickValue;
         OnTick = Observable.Interval(TimeSpan.FromSeconds(1))
