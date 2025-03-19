@@ -12,9 +12,6 @@ public class Building
     public ReactiveProperty<float> TimeLeft { get; } = new ReactiveProperty<float>();
     public ReactiveProperty<int> CurrentResourceAmount { get; } = new ReactiveProperty<int>();
 
-    //Ilerleyen asamalarda 
-    //public float ProductionTime => _info.BaseProductionTime * (level*timeMultipler);
-    //etc. yapilabilir
     public GameObject Prefab => _info.BuildingPrefab;
     public float ProductionTime => _info.BaseProductionTime;
     public ResourceSO InputResource => _info.InputResource;
@@ -23,62 +20,81 @@ public class Building
     public int InputAmount => _info.BaseProductionInputAmount;
     public int MaxCapacity => _info.BaseCapacity;
 
-    public bool CanAddOrder => CurrentOrderCapacity.Value + 1 <= MaxCapacity;
-    public bool CanRemoveOrder => CurrentOrderCapacity.Value - 1 >= 0;
+    public bool CanAddOrder => CurrentOrderCapacity.Value < MaxCapacity;
+    public bool CanRemoveOrder => CurrentOrderCapacity.Value > 0;
+    
+    public bool HaveEnoughSpace()
+    {
+        return (CurrentResourceAmount.Value + OutputAmount) <= MaxCapacity;
+    }
 
     public Building(BuildingSO buildingSo)
     {
         _info = buildingSo;
         TimeLeft.Value = ProductionTime;
-
     }
 
     public void AddOrder()
     {
-        if (CanAddOrder) CurrentOrderCapacity.Value++;
-
+        if (CanAddOrder) 
+            CurrentOrderCapacity.Value++;
     } 
 
     public void RemoveOrder()
     {
-        if(CanRemoveOrder)CurrentOrderCapacity.Value--;
+        if (CanRemoveOrder) 
+            CurrentOrderCapacity.Value--;
     }
     
     public void Tick(float tickValue)
     {
-        if(!_info.IsGenerator && CurrentOrderCapacity.Value == 0) return;
-        if (TimeLeft.Value - tickValue <= 0)
+        if (!_info.IsGenerator && CurrentOrderCapacity.Value == 0) return;
+
+        TimeLeft.Value -= tickValue;
+
+        if (TimeLeft.Value <= 0)
         {
             FinishProduction();
-        } else TimeLeft.Value -= tickValue;
-        
+        }
     }
-    
     
     private void FinishProduction()
     {
+        if (!HaveEnoughSpace()) return;
+
         CurrentResourceAmount.Value += OutputAmount;
         TimeLeft.Value = 0;
-        StartProduction();
+        
+        if (_info.IsGenerator || CurrentOrderCapacity.Value > 0)
+        {
+            StartProduction(); 
+        }
     }
-    
     
     public void StartProduction()
     {
         if (!_info.IsGenerator && CurrentOrderCapacity.Value <= 0) return;
-        TimeLeft.Value = ProductionTime;
-        RemoveOrder();
+        if (!HaveEnoughSpace()) return;  
 
+        TimeLeft.Value = ProductionTime;
+        if (!_info.IsGenerator) 
+            RemoveOrder();
     }
     
     public void CollectResource()
     {
-        var amount = CurrentResourceAmount.Value;
-        CurrentResourceAmount.Value = 0;
-        ResourceController.OnResourceAddRequested.OnNext((OutputResource, amount));
-    }
+        if (CurrentResourceAmount.Value > 0)
+        {
+            int amount = CurrentResourceAmount.Value;
+            CurrentResourceAmount.Value = 0;
+            ResourceController.OnResourceAddRequested.OnNext((OutputResource, amount));
 
-    
+            if (_info.IsGenerator)
+            {
+                StartProduction();
+            }
+        }
+    }
 
     public void Interact(BuildingObject buildingObject)
     {
@@ -88,7 +104,5 @@ public class Building
             return;
         }
         CollectResource();
-        
-        
     }
 }
