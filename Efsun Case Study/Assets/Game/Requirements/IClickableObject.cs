@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IClickableObject
 {
-    public void OnClick();
+    public void OnClicked();
 }

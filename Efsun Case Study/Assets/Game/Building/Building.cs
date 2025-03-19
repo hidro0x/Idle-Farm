@@ -39,5 +39,5 @@ public class Building : SerializedMonoBehaviour, IClickableObject
         Data.RemoveFromCapacity(1);
     }
 
-    public void OnClick() => ProductionButtonsUI.OnBuildingUIRequested.OnNext(this);
+    public void OnClicked() => ProductionButtonsUI.OnBuildingUIRequested.OnNext(this);
 }
