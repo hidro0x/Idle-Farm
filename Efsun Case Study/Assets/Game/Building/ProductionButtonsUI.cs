@@ -16,6 +16,15 @@ public class ProductionButtonsUI : MonoBehaviour
     
     private IDisposable _resourceAddSubscription;
 
+    private RectTransform _rect;
+    private Canvas _canvas;
+
+    private void Awake()
+    {
+        _rect = GetComponent<RectTransform>();
+        _canvas = GetComponent<Canvas>();
+    }
+    
     private void OnEnable()
     {
         _resourceAddSubscription = OnBuildingUIRequested
@@ -32,6 +41,9 @@ public class ProductionButtonsUI : MonoBehaviour
     {
         startProductionButton.onClick.AddListener(building.AddToProductionOrder);
         removeProductionButton.onClick.AddListener(building.RemoveFromProductionOrder);
+
+        _canvas.enabled = true;
+        _rect.position = building.InfoUI.Rect.position;
         
         var buildingSo = building.BuildingSO;
         resourceIcon.sprite = buildingSo.ResourceSo.Icon;
@@ -40,6 +52,8 @@ public class ProductionButtonsUI : MonoBehaviour
     
     private void Close()
     {
+
+        _canvas.enabled = false;
         startProductionButton.onClick.RemoveAllListeners();
         removeProductionButton.onClick.RemoveAllListeners();
     }

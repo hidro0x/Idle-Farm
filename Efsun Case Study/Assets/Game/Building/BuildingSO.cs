@@ -24,7 +24,9 @@ public class BuildingSO : SerializedScriptableObject
     public float ProductionTime => baseProductionTime;
     public int RequiredAmount => productionRequirementAmount;
     public int OutputAmount => productionOutputAmount;
-    
+    public GameObject Prefab => buildingPrefab;
+
+
 }
 
 [System.Serializable]
@@ -33,7 +35,7 @@ public class BuildingData
     public ReactiveProperty<int> CurrentCapacity { get; } = new ReactiveProperty<int>();
     public ReactiveProperty<float> TimeLeft { get; } = new ReactiveProperty<float>();
     public ReactiveProperty<int> CurrentResourceAmount { get; } = new ReactiveProperty<int>();
-    public BuildingData(int currentCapacity, float timeLeft)
+    public BuildingData(int currentCapacity= 0, float timeLeft = 0)
     {
         CurrentCapacity.Value = currentCapacity;
         TimeLeft.Value = timeLeft;

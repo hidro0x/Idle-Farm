@@ -8,42 +8,42 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-public class BuildingEditor : OdinMenuEditorWindow
+public class GameSettingsEditor : OdinMenuEditorWindow
 {
-    [MenuItem("General Settings/Building Database")]
+    [MenuItem("General Settings/Settings Database")]
     private static void OpenWindow() 
     { 
-        GetWindow<BuildingEditor>().Show();
+        GetWindow<GameSettingsEditor>().Show();
     }
 
     protected override OdinMenuTree BuildMenuTree()
     {
         var tree = new OdinMenuTree();
         tree.Selection.SupportsMultiSelect = false;
-
-        tree.Add("Create New Building", new CreateNewBuilding());
-        tree.AddAllAssetsAtPath("Buildings", "Assets/Resources/BuildingDatabase/", typeof(BuildingSO));
+        
+        tree.Add("Create New Setting", new CreateNewSetting());
+        tree.AddAllAssetsAtPath("Settings", "Assets/Resources/SettingDatabase/", typeof(GameSettings));
         return tree;
     }
-
-    public class CreateNewBuilding
+    
+    
+    public class CreateNewSetting
     {
-        public CreateNewBuilding()
+        public CreateNewSetting()
         {
-            buildingData = CreateInstance<BuildingSO>();
+            settingData = CreateInstance<GameSettings>();
         }
 
         [InlineEditor(Expanded = true)]
-        public BuildingSO buildingData;
+        public GameSettings settingData;
 
-        [Button("Create New Building")]
+        [Button("Create New Setting")]
         private void CreateNewData()
         {
-            AssetDatabase.CreateAsset(buildingData, "Assets/Resources/BuildingDatabase/" + buildingData.ID + ".asset");
+            AssetDatabase.CreateAsset(settingData, "Assets/Resources/SettingDatabase/" + settingData + ".asset");
             AssetDatabase.SaveAssets();
         }
     }
-    
 
     protected override void OnBeginDrawEditors()
     {

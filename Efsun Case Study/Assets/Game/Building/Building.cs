@@ -3,12 +3,24 @@ using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Zenject;
 
 public class Building : SerializedMonoBehaviour, IClickableObject
 {
     [field:SerializeField] public BuildingSO BuildingSO { get; private set; }
     public BuildingData Data {get; private set; }
-    private InfoSliderUI _infoUI;
+    public InfoSliderUI InfoUI {get; private set; }
+
+    [Inject]
+    public void Init(BuildingController controller, InfoSliderUIFactory infoSliderUIFactory)
+    {
+        controller.AddBuilding(this);
+
+        Instantiate(BuildingSO.Prefab, transform.GetChild(0));
+        Data = new BuildingData();
+        InfoUI = infoSliderUIFactory.Create();
+        InfoUI.Init(this);
+    }
 
     public void Tick(float tickValue)
     {
@@ -27,5 +39,5 @@ public class Building : SerializedMonoBehaviour, IClickableObject
         Data.RemoveFromCapacity(1);
     }
 
-    public void OnClick() => ProductionButtonsUI.OnBuildingUIRequested.OnNext((this));
+    public void OnClick() => ProductionButtonsUI.OnBuildingUIRequested.OnNext(this);
 }

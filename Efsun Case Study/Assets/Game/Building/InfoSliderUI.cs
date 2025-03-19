@@ -5,6 +5,7 @@ using TMPro;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class InfoSliderUI : MonoBehaviour
 {
@@ -12,11 +13,16 @@ public class InfoSliderUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI productionCountText, productionTimeText, resourceCountText;
     private Slider _slider;
     
+    public RectTransform Rect { get; private set; }
+    private Canvas _canvas;
+    
     private CompositeDisposable _disposables = new CompositeDisposable();
 
     private void Awake()
     {
         _slider = GetComponent<Slider>();
+        Rect = GetComponent<RectTransform>();
+        _canvas = GetComponent<Canvas>();
     }
 
     /// <summary>
@@ -50,9 +56,14 @@ public class InfoSliderUI : MonoBehaviour
             .AddTo(_disposables);
     }
 
+    public void Show()
+    {
+        _canvas.enabled = true;
+    }
+    
     public void Close()
     {
-        _disposables.Clear();
+        _canvas.enabled = false;
     }
 
     private void OnDestroy()
@@ -60,3 +71,5 @@ public class InfoSliderUI : MonoBehaviour
         _disposables.Dispose();
     }
 }
+
+public class InfoSliderUIFactory : PlaceholderFactory<InfoSliderUI> { }

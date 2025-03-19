@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class ResourceController : MonoBehaviour
 {
-    private Dictionary<int, ReactiveProperty<int>> _resources;
+    private Dictionary<int, ReactiveProperty<int>> _resources = new Dictionary<int, ReactiveProperty<int>>();
     
     public static readonly Subject<(ResourceSO resource, int amount)> OnResourceAddRequested = new Subject<(ResourceSO, int)>();
 
