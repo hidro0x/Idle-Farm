@@ -22,7 +22,7 @@ public class GameSettingsEditor : OdinMenuEditorWindow
         tree.Selection.SupportsMultiSelect = false;
         
         tree.Add("Create New Setting", new CreateNewSetting());
-        tree.AddAllAssetsAtPath("Settings", "Assets/Resources/SettingDatabase/", typeof(GameSettings));
+        tree.AddAllAssetsAtPath("Settings", "Assets/Resources/SettingsDatabase/", typeof(GameSettings));
         return tree;
     }
     
@@ -40,7 +40,7 @@ public class GameSettingsEditor : OdinMenuEditorWindow
         [Button("Create New Setting")]
         private void CreateNewData()
         {
-            AssetDatabase.CreateAsset(settingData, "Assets/Resources/SettingDatabase/" + settingData + ".asset");
+            AssetDatabase.CreateAsset(settingData, "Assets/Resources/SettingsDatabase/" + "GameSetting" + ".asset");
             AssetDatabase.SaveAssets();
         }
     }

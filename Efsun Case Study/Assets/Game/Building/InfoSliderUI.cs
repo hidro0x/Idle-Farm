@@ -20,7 +20,7 @@ public class InfoSliderUI : MonoBehaviour
 
     private void Awake()
     {
-        _slider = GetComponent<Slider>();
+        _slider = GetComponentInChildren<Slider>();
         Rect = GetComponent<RectTransform>();
         _canvas = GetComponent<Canvas>();
     }
