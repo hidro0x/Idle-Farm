@@ -39,7 +39,7 @@ public class BuildingEditor : OdinMenuEditorWindow
         [Button("Create New Building")]
         private void CreateNewData()
         {
-            AssetDatabase.CreateAsset(buildingData, "Assets/Resources/BuildingDatabase/" + buildingData.ID + ".asset");
+            AssetDatabase.CreateAsset(buildingData, "Assets/Resources/BuildingDatabase/" + buildingData.Id + ".asset");
             AssetDatabase.SaveAssets();
         }
     }

@@ -7,9 +7,9 @@ using UnityEngine;
 
 public class BuildingController 
 {
-    private readonly List<Building> _buildings = new List<Building>();
+    private readonly List<BuildingObject> _buildings = new List<BuildingObject>();
     
-    public void AddBuilding(Building building)
+    public void AddBuilding(BuildingObject building)
     {
         if (!_buildings.Contains(building))
         {
@@ -17,7 +17,7 @@ public class BuildingController
         }
     }
 
-    public void RemoveBuilding(Building building)
+    public void RemoveBuilding(BuildingObject building)
     {
         if (_buildings.Contains(building))
         {
@@ -25,7 +25,7 @@ public class BuildingController
         }
     }
 
-    public Building GetBuilding(Building building)
+    public BuildingObject GetBuilding(BuildingObject building)
     {
         return _buildings.Contains(building) ? building : null;
     }

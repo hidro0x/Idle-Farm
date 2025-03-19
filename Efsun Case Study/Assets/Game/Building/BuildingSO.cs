@@ -5,49 +5,94 @@ using Sirenix.OdinInspector;
 using UniRx;
 using UnityEngine;
 
-
 public class BuildingSO : SerializedScriptableObject
 {
-    [SerializeField] private int id;
+    [field:Title("General Information")]
+    [field: MinValue(1)] 
+    [field: SerializeField] public int Id { get; private set; }
+    [field: Tooltip("If its building that not require any input resource.")]
+    [field: OnValueChanged("SetAsGenerator")]
+    [field: SerializeField] public bool IsGenerator { get; private set; }
+
+    [field:Title("Building Prefab")]
+    [field: PreviewField(100, ObjectFieldAlignment.Center)]
+    [field: Required("Can not be empty.")]
+    [field: SerializeField] public GameObject BuildingPrefab { get; private set; }
+
+    [field:Title("Resources")]
+    [field: Required("Can not be empty.")]
+    [field: SerializeField] public ResourceSO OutputResource { get; private set; }
+    [field: HideIf("isGenerator")]
+    [field: Required("Can not be empty.")]
+    [field: SerializeField] public ResourceSO InputResource { get; private set; }
+
+    [field:Title("Production Details")]
+    [field: MinValue(1)]
+    [field: SerializeField] public int BaseCapacity { get; private set; }
+    [field: MinValue(1)] 
+    [field: SerializeField] public float BaseProductionTime { get; private set; }
+    [field: HideIf("isGenerator")]
+    [field: MinValue(1)] 
+    [field: SerializeField] public int BaseProductionInputAmount { get; private set; }
+    [field: MinValue(1)] 
+    [field: ValidateInput("IsOverCapacity", "Can't be bigger number than maximum capacity.")]
+    [field: SerializeField] public int BaseProductionOutputAmount { get; private set; }
     
-    [PreviewField(100, ObjectFieldAlignment.Center)]
-    [SerializeField] private GameObject buildingPrefab;
-    [SerializeField] private ResourceSO resourceSo;
-    [SerializeField] private int baseCapacity;
-    [SerializeField] private float baseProductionTime;
-    [SerializeField] private int productionRequirementAmount;
-    [SerializeField] private int productionOutputAmount;
+    private bool IsOverCapacity(int num)
+    {
+        return BaseProductionOutputAmount < BaseCapacity;
+    }
 
-    public int ID => id;
-    public ResourceSO Resource => resourceSo;
-    public int Capacity => baseCapacity;
-    public float ProductionTime => baseProductionTime;
-    public int RequiredAmount => productionRequirementAmount;
-    public int OutputAmount => productionOutputAmount;
-    public GameObject Prefab => buildingPrefab;
-
-
+    private void SetAsGenerator()
+    {
+        BaseProductionInputAmount = 0;
+        InputResource = null;
+    }
 }
 
+
 [System.Serializable]
-public class BuildingStats
+public class Building
 {
+    private BuildingSO _info;
+    
     public ReactiveProperty<int> CurrentCapacity { get; } = new ReactiveProperty<int>();
     public ReactiveProperty<float> TimeLeft { get; } = new ReactiveProperty<float>();
     public ReactiveProperty<int> CurrentResourceAmount { get; } = new ReactiveProperty<int>();
 
-    private int _productionTime;
-    
-    public BuildingStats(int currentCapacity= 0, float timeLeft = 0)
+    //Ilerleyen asamalarda 
+    //public float ProductionTime => _info.BaseProductionTime * (level*timeMultipler);
+    //etc. yapilabilir
+    public GameObject Prefab => _info.BuildingPrefab;
+    public float ProductionTime => _info.BaseProductionTime;
+    public ResourceSO InputResource => _info.InputResource;
+    public ResourceSO OutputResource => _info.OutputResource;
+    public int OutputAmount => _info.BaseProductionOutputAmount;
+    public int InputAmount => _info.BaseProductionInputAmount;
+    public int MaxCapacity => _info.BaseCapacity;
+
+    public Building(BuildingSO buildingSo)
     {
-        CurrentCapacity.Value = currentCapacity;
-        TimeLeft.Value = timeLeft;
+        _info = buildingSo;
     }
-
-    public void SetTime(int productionTime) => _productionTime = productionTime;
-    public void AddToCapacity(int amount) => CurrentCapacity.Value += amount;
-    public void RemoveFromCapacity(int amount) => CurrentCapacity.Value -= amount;
-
+    private void AddToCapacity(int amount) => CurrentCapacity.Value += amount;
+    private void RemoveFromCapacity(int amount) => CurrentCapacity.Value -= amount;
+    public void Tick(float tickValue)
+    {
+        if(IsProductionFinished(tickValue))ResourceController.OnResourceAddRequested.OnNext((OutputResource, OutputAmount));
+    }
+    
+    public void AddToProductionOrder()
+    {
+        if(CurrentCapacity.Value + 1 > MaxCapacity) return;
+        AddToCapacity(1);
+    }
+    
+    public void RemoveFromProductionOrder()
+    {
+        if(CurrentCapacity.Value - 1 < 0) return;
+        RemoveFromCapacity(1);
+    }
     public int CollectResource()
     {
         var amount = CurrentCapacity.Value;
@@ -65,5 +110,15 @@ public class BuildingStats
         CurrentResourceAmount.Value++;
         return true;
 
+    }
+
+    public void Interact(BuildingObject buildingObject)
+    {
+        if (_info.IsGenerator)
+        {
+            ResourceController.OnResourceAddRequested.OnNext((InputResource, CollectResource()));
+            return;
+        }
+        ProductionButtonsUI.OnBuildingUIRequested.OnNext(buildingObject);
     }
 }

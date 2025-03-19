@@ -30,28 +30,26 @@ public class InfoSliderUI : MonoBehaviour
     /// </summary>
     public void Init(Building building)
     {
-        var buildingSO = building.BuildingSO;
-        var data = building.Stats;
-        
+
         _disposables.Clear();
         
-        resourceIconImage.sprite = buildingSO.Resource.Icon;
+        resourceIconImage.sprite = building.OutputResource.Icon;
         
-        data.CurrentCapacity
+        building.CurrentCapacity
             .Subscribe(capacity => {
-                productionCountText.text = $"{capacity}/{buildingSO.Capacity}";
+                productionCountText.text = $"{capacity}/{building.MaxCapacity}";
             })
             .AddTo(_disposables);
         
-        data.TimeLeft
+        building.TimeLeft
             .Subscribe(time =>
             {
                 productionTimeText.text = $"{time:0.0} sn";
-                _slider.value = time / buildingSO.ProductionTime;
+                _slider.value = time / building.ProductionTime;
             })
             .AddTo(_disposables);
         
-        data.CurrentResourceAmount
+        building.CurrentResourceAmount
             .Subscribe(amount => resourceCountText.text = amount.ToString())
             .AddTo(_disposables);
     }

@@ -14,12 +14,13 @@ public class ProductionButtonsUI : MonoBehaviour
     [SerializeField] private Image resourceIcon;
     [SerializeField] private TextMeshProUGUI resourceRequiredAmountText;
     
-    public static readonly Subject<Building> OnBuildingUIRequested = new Subject<Building>();
+    public static readonly Subject<BuildingObject> OnBuildingUIRequested = new Subject<BuildingObject>();
 
     private readonly CompositeDisposable _disposables = new CompositeDisposable();
 
     private RectTransform _rect;
     private Canvas _canvas;
+    private bool IsOpen => _canvas.enabled;
 
     private void Awake()
     {
@@ -44,22 +45,22 @@ public class ProductionButtonsUI : MonoBehaviour
     }
     
 
-    private void Open(Building building)
+    private void Open(BuildingObject buildingObject)
     {
-        startProductionButton.onClick.AddListener(building.AddToProductionOrder);
-        removeProductionButton.onClick.AddListener(building.RemoveFromProductionOrder);
+        if(IsOpen) return;
+        
+        startProductionButton.onClick.AddListener(buildingObject.Building.AddToProductionOrder);
+        removeProductionButton.onClick.AddListener(buildingObject.Building.RemoveFromProductionOrder);
 
-        _rect.position = building.InfoUI.Rect.position;
+        _rect.position = buildingObject.InfoUI.Rect.position;
         _canvas.enabled = true;
-
-        var buildingSo = building.BuildingSO;
-        resourceIcon.sprite = buildingSo.Resource.Icon;
-        resourceRequiredAmountText.SetText($"x{buildingSo.RequiredAmount}");
+        
+        resourceIcon.sprite = buildingObject.Building.InputResource.Icon;
+        resourceRequiredAmountText.SetText($"x{buildingObject.Building.InputAmount}");
     }
     
     private void Close()
     {
-
         _canvas.enabled = false;
         startProductionButton.onClick.RemoveAllListeners();
         removeProductionButton.onClick.RemoveAllListeners();
