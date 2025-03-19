@@ -20,7 +20,9 @@ public class ProductionButtonsUI : MonoBehaviour
 
     private RectTransform _rect;
     private Canvas _canvas;
-    private bool IsOpen => _canvas.enabled;
+    private BuildingObject _buildingObject;
+    private bool IsOpen => _buildingObject != null;
+    private bool IsSame(BuildingObject buildingObject) => buildingObject == _buildingObject;
 
     private void Awake()
     {
@@ -49,8 +51,15 @@ public class ProductionButtonsUI : MonoBehaviour
     {
         if (IsOpen)
         {
-            buildingObject.Building.CollectResource();
-            return;
+            if (IsSame(buildingObject))
+            {
+                buildingObject.Building.CollectResource();
+                return;
+            }
+            
+            startProductionButton.onClick.RemoveAllListeners();
+            removeProductionButton.onClick.RemoveAllListeners();
+
         }
         
         startProductionButton.onClick.AddListener(buildingObject.Building.AddOrder);

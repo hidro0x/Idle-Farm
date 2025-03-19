@@ -403,7 +403,6 @@ GameObject:
   - component: {fileID: 1344331167575297054}
   - component: {fileID: 731275397770891739}
   - component: {fileID: 6870178512792280637}
-  - component: {fileID: 2055241492220687997}
   m_Layer: 5
   m_Name: InfoSlider
   m_TagString: Untagged
@@ -499,25 +498,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.19607843}
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
   m_EffectDistance: {x: 0, y: -5}
   m_UseGraphicAlpha: 1
---- !u!114 &2055241492220687997
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6483639567063918569}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f7c69e9cd7103e488b5ef4bd661368c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  resourceIconImage: {fileID: 3708320500657247392}
-  productionCountText: {fileID: 5675122360138380256}
-  productionTimeText: {fileID: 356688880674595391}
-  resourceCountText: {fileID: 4585986684117184857}
 --- !u!1 &7839507728994704491
 GameObject:
   m_ObjectHideFlags: 0

@@ -59,7 +59,7 @@ public class InfoSliderUI : MonoBehaviour
                 else
                 {
                     slider.value = 1;
-                    productionTimeText.text = String.Empty;
+                    productionTimeText.text = $"{building.ProductionTime:0.0} sn";
                 }
             })
             .AddTo(_disposables);

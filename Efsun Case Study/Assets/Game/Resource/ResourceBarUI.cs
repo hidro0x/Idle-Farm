@@ -38,4 +38,3 @@ public class ResourceBarUI : MonoBehaviour
     }
 }
 
-public class ResourceBarUIFactory : PlaceholderFactory<ResourceBarUI> { }
