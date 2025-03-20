@@ -22,12 +22,8 @@ public class Building
 
     public bool CanAddOrder(int ownedResourceAmount) => CurrentOrderCapacity.Value < MaxCapacity && ownedResourceAmount >= InputAmount;
     public bool CanRemoveOrder => CurrentOrderCapacity.Value > 0;
-    
-    
-    public bool HaveEnoughSpace()
-    {
-        return (CurrentResourceAmount.Value + OutputAmount) <= MaxCapacity;
-    }
+    public bool HaveEnoughSpace() => CurrentResourceAmount.Value + OutputAmount <= MaxCapacity;
+ 
 
     public Building(BuildingSO buildingSo)
     {
