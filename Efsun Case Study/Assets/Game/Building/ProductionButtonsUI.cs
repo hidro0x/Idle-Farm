@@ -17,6 +17,7 @@ public class ProductionButtonsUI : MonoBehaviour
     public static readonly Subject<BuildingObject> OnBuildingUIRequested = new Subject<BuildingObject>();
 
     private readonly CompositeDisposable _disposables = new CompositeDisposable();
+    private  IDisposable _buttonEvent;
 
     private RectTransform _rect;
     private Canvas _canvas;
@@ -33,23 +34,23 @@ public class ProductionButtonsUI : MonoBehaviour
     private void OnEnable()
     {
         MobileTouchCamera.OnClickedOut
-            .Subscribe(_ => Close()) // Paneli kapat
+            .Subscribe(_ => Hide()) // Paneli kapat
             .AddTo(_disposables);
 
         OnBuildingUIRequested
-            .Subscribe(Open)
+            .Subscribe(Init)
             .AddTo(_disposables);
     }
 
     private void OnDisable()
     {
         _disposables?.Clear();
+        _buttonEvent.Dispose();
     }
     
 
-    private void Open(BuildingObject buildingObject)
+    private void Init(BuildingObject buildingObject)
     {
-        
         if (IsOpen && IsSame(buildingObject))
         {
             buildingObject.Building.CollectResource();
@@ -58,21 +59,33 @@ public class ProductionButtonsUI : MonoBehaviour
 
         _buildingObject = buildingObject;
         
+        _buttonEvent?.Dispose();
+        _buttonEvent = buildingObject.Building.CurrentOrderCapacity
+            .Subscribe(_ =>
+            {
+                startProductionButton.interactable = buildingObject.Building.CanAddOrder;
+                removeProductionButton.interactable = buildingObject.Building.CanRemoveOrder;
+            });
+        
         startProductionButton.onClick.RemoveAllListeners();
         removeProductionButton.onClick.RemoveAllListeners();
-        
         startProductionButton.onClick.AddListener(buildingObject.Building.AddOrder);
         removeProductionButton.onClick.AddListener(buildingObject.Building.RemoveOrder);
-
-        _rect.position = buildingObject.InfoUI.Rect.position;
-        _canvas.enabled = true;
         
         resourceIcon.sprite = buildingObject.Building.InputResource.Icon;
         resourceRequiredAmountText.SetText($"x{buildingObject.Building.InputAmount}");
+        
+        SetPosition(buildingObject.InfoUI.Rect.position);
+        Show();
     }
     
-    private void Close()
+    private void Show() => _canvas.enabled = true;
+    
+    private void Hide() => _canvas.enabled = false;
+ 
+
+    private void SetPosition(Vector3 pos)
     {
-        _canvas.enabled = false;
+        _rect.position = pos;
     }
 }
