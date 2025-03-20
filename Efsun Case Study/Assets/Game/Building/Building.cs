@@ -23,8 +23,8 @@ public class Building
     public bool CanAddOrder(int ownedResourceAmount) => CurrentOrderCapacity.Value < MaxCapacity && ownedResourceAmount >= InputAmount;
     public bool CanRemoveOrder => CurrentOrderCapacity.Value > 0;
     public bool HaveEnoughSpace() => CurrentResourceAmount.Value + OutputAmount <= MaxCapacity;
- 
 
+    private void ResetTime() => TimeLeft.Value = ProductionTime;
     public Building(BuildingSO buildingSo)
     {
         _info = buildingSo;
@@ -34,11 +34,14 @@ public class Building
     public void AddOrder()
     {
         CurrentOrderCapacity.Value++;
+        ResourceController.RequestRemoveResource(InputResource, InputAmount);
     } 
 
     public void RemoveOrder()
     {
         CurrentOrderCapacity.Value--;
+        ResourceController.RequestAddResource(InputResource, InputAmount);
+        ResetTime();
     }
     
     public void Tick(float tickValue)
@@ -69,9 +72,10 @@ public class Building
     public void StartProduction()
     {
         if (!_info.IsGenerator && CurrentOrderCapacity.Value <= 0) return;
-        if (!HaveEnoughSpace()) return;  
+        if (!HaveEnoughSpace()) return;
+        
+        ResetTime();
 
-        TimeLeft.Value = ProductionTime;
         if (!_info.IsGenerator) 
             RemoveOrder();
     }
