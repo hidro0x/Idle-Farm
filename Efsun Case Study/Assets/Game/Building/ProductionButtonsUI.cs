@@ -49,18 +49,17 @@ public class ProductionButtonsUI : MonoBehaviour
 
     private void Open(BuildingObject buildingObject)
     {
-        if (IsOpen)
+        
+        if (IsOpen && IsSame(buildingObject))
         {
-            if (IsSame(buildingObject))
-            {
-                buildingObject.Building.CollectResource();
-                return;
-            }
-            
-            startProductionButton.onClick.RemoveAllListeners();
-            removeProductionButton.onClick.RemoveAllListeners();
-
+            buildingObject.Building.CollectResource();
+            return;
         }
+
+        _buildingObject = buildingObject;
+        
+        startProductionButton.onClick.RemoveAllListeners();
+        removeProductionButton.onClick.RemoveAllListeners();
         
         startProductionButton.onClick.AddListener(buildingObject.Building.AddOrder);
         removeProductionButton.onClick.AddListener(buildingObject.Building.RemoveOrder);
@@ -75,7 +74,5 @@ public class ProductionButtonsUI : MonoBehaviour
     private void Close()
     {
         _canvas.enabled = false;
-        startProductionButton.onClick.RemoveAllListeners();
-        removeProductionButton.onClick.RemoveAllListeners();
     }
 }

@@ -35,16 +35,9 @@ public class InfoSliderUI : MonoBehaviour
         resourceIconImage.sprite = building.OutputResource.Icon;
         
         building.CurrentOrderCapacity
-            .Subscribe(capacity => {
-                if (building.CurrentOrderCapacity.Value > 0)
-                {
-                    productionCountText.text = $"{capacity}/{building.MaxCapacity}";
-                }
-                else
-                {
-                    productionCountText.text = String.Empty;
-                }
-                
+            .Subscribe(capacity =>
+            {
+                productionCountText.text = building.CurrentOrderCapacity.Value > 0 ? $"{capacity}/{building.MaxCapacity}" : String.Empty;
             })
             .AddTo(_disposables);
         
