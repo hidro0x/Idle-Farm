@@ -7,21 +7,24 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 using YigitDurmus;
+using Zenject;
 
 public class ProductionButtonsUI : MonoBehaviour
 {
     [SerializeField] private Button startProductionButton, removeProductionButton;
     [SerializeField] private Image resourceIcon;
     [SerializeField] private TextMeshProUGUI resourceRequiredAmountText;
-    
-    public static readonly Subject<BuildingObject> OnBuildingUIRequested = new Subject<BuildingObject>();
-
-    private readonly CompositeDisposable _disposables = new CompositeDisposable();
-    private  IDisposable _buttonEvent;
-
     private RectTransform _rect;
     private Canvas _canvas;
+    
+    
+    public static readonly Subject<BuildingObject> OnBuildingUIRequested = new Subject<BuildingObject>();
+    private readonly CompositeDisposable _disposables = new CompositeDisposable();
+    private readonly CompositeDisposable _buttonSubscriptions = new CompositeDisposable();
+    
+    
     private BuildingObject _buildingObject;
+    [Inject]private ResourceController _resourceController;
     private bool IsOpen => _buildingObject != null;
     private bool IsSame(BuildingObject buildingObject) => buildingObject == _buildingObject;
 
@@ -34,7 +37,11 @@ public class ProductionButtonsUI : MonoBehaviour
     private void OnEnable()
     {
         MobileTouchCamera.OnClickedOut
-            .Subscribe(_ => Hide()) // Paneli kapat
+            .Subscribe(_ =>
+            {
+                Hide();
+                _buildingObject = null;
+            })
             .AddTo(_disposables);
 
         OnBuildingUIRequested
@@ -45,7 +52,7 @@ public class ProductionButtonsUI : MonoBehaviour
     private void OnDisable()
     {
         _disposables?.Clear();
-        _buttonEvent.Dispose();
+        _buttonSubscriptions?.Clear();
     }
     
 
@@ -58,14 +65,19 @@ public class ProductionButtonsUI : MonoBehaviour
         }
 
         _buildingObject = buildingObject;
+        _buttonSubscriptions?.Clear();
         
-        _buttonEvent?.Dispose();
-        _buttonEvent = buildingObject.Building.CurrentOrderCapacity
-            .Subscribe(_ =>
+        //Hem Resource kaynagina hem de building kapasitesine subs olarak add order buttonunu gunceller.
+        _resourceController.Resources[_buildingObject.Building.InputResource]
+            .CombineLatest(_buildingObject.Building.CurrentOrderCapacity,
+                (availableResource, currentCapacity) => _buildingObject.Building.CanAddOrder(availableResource)) 
+            .Subscribe(canProduce =>
             {
-                startProductionButton.interactable = buildingObject.Building.CanAddOrder;
+                startProductionButton.interactable = canProduce;
                 removeProductionButton.interactable = buildingObject.Building.CanRemoveOrder;
-            });
+            })
+            .AddTo(_buttonSubscriptions);
+        
         
         startProductionButton.onClick.RemoveAllListeners();
         removeProductionButton.onClick.RemoveAllListeners();
@@ -78,6 +90,7 @@ public class ProductionButtonsUI : MonoBehaviour
         SetPosition(buildingObject.InfoUI.Rect.position);
         Show();
     }
+    
     
     private void Show() => _canvas.enabled = true;
     

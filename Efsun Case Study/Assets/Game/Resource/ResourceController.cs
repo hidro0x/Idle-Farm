@@ -9,8 +9,10 @@ using Zenject;
 public class ResourceController : IDisposable
 {
     private Dictionary<ResourceSO, ReactiveProperty<int>> _resources = new();
-    private readonly IDisposable _resourceAddSubscription;
-    public static readonly Subject<(ResourceSO resource, int amount)> OnResourceAddRequested = new Subject<(ResourceSO, int)>();
+    private readonly CompositeDisposable _resourceControlSubscriptions = new CompositeDisposable();
+    
+    private static readonly Subject<(ResourceSO resource, int amount)> OnResourceAddRequested = new Subject<(ResourceSO, int)>();
+    private static readonly Subject<(ResourceSO resource, int amount)> OnResourceRemoveRequested = new Subject<(ResourceSO, int)>();
     public Dictionary<ResourceSO, ReactiveProperty<int>> Resources => _resources;
 
     [Inject]
@@ -21,13 +23,15 @@ public class ResourceController : IDisposable
             _resources.Add(resource.Key, new ReactiveProperty<int>(resource.Value));
         }
 
-        _resourceAddSubscription = OnResourceAddRequested
-            .Subscribe(tuple => AddResource(tuple.resource, tuple.amount));
+        OnResourceAddRequested
+            .Subscribe(tuple => AddResource(tuple.resource, tuple.amount)).AddTo(_resourceControlSubscriptions);
+        OnResourceRemoveRequested
+            .Subscribe(tuple => RemoveResource(tuple.resource, tuple.amount)).AddTo(_resourceControlSubscriptions);
     }
 
     public void Dispose()
     {
-        _resourceAddSubscription.Dispose(); 
+        _resourceControlSubscriptions.Clear(); 
     }
 
     private void AddResource(ResourceSO resource, int amountToAdd)
@@ -37,11 +41,21 @@ public class ResourceController : IDisposable
     
     private void RemoveResource(ResourceSO resource, int amountToRemove)
     {
+        if (_resources[resource].Value - amountToRemove < 0)
+        {
+            _resources[resource].Value = 0;
+            return;
+        }
         _resources[resource].Value -= amountToRemove;
     }
 
-    public int GetResourceAmount(ResourceSO resource)
+    public static void RequestRemoveResource(ResourceSO resource, int amount)
     {
-        return _resources[resource].Value;
+        OnResourceRemoveRequested.OnNext((resource, amount));
+    }
+    
+    public static void RequestAddResource(ResourceSO resource, int amount)
+    {
+        OnResourceAddRequested.OnNext((resource, amount));
     }
 }

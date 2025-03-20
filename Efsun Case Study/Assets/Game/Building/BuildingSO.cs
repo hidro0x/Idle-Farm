@@ -34,9 +34,14 @@ public class BuildingSO : SerializedScriptableObject
     [field: HideIf("IsGenerator")]
     [field: MinValue(1)] 
     [field: SerializeField] public int BaseProductionInputAmount { get; private set; }
-    [field: MinValue(1)] 
+
+    [field: SerializeField] private bool editOutputValue;
+    [field: MinValue(1)]
+    [field:EnableIf("editOutputValue")]
     [field: ValidateInput("IsOverCapacity", "Can't be bigger number than maximum capacity.")]
-    [field: SerializeField] public int BaseProductionOutputAmount { get; private set; }
+    [SerializeField] private int baseProductionOutputAmount = 1;
+
+    public int BaseProductionOutputAmount => baseProductionOutputAmount;
     
     private bool IsOverCapacity(int num)
     {
