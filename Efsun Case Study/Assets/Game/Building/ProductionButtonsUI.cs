@@ -72,7 +72,7 @@ public class ProductionButtonsUI : MonoBehaviour
 
         //Hem Resource kaynagina hem de building kapasitesine subs olarak add order buttonunu gunceller.
         _buttonSubscriptions = _resourceController.Resources[buildingObject.Building.InputResource]
-            .CombineLatest(buildingObject.Building.CurrentOrderAmount,
+            .CombineLatest(buildingObject.Building.CurrentTotalCapacity,
                 (availableResource, currentCapacity) => buildingObject.Building.CanAddOrder(availableResource))
             .Subscribe(canProduce =>
             {

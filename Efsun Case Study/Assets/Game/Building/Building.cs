@@ -8,9 +8,10 @@ public class Building
 {
     private BuildingSO _info;
     
-    public ReactiveProperty<int> CurrentOrderAmount { get; } = new ReactiveProperty<int>();
+    private ReactiveProperty<int> _currentOrderAmount  = new ReactiveProperty<int>(); 
     public ReactiveProperty<float> TimeLeft { get; } = new ReactiveProperty<float>();
     public ReactiveProperty<int> CurrentResourceAmount { get; } = new ReactiveProperty<int>();
+    public ReactiveProperty<int> CurrentTotalCapacity { get; } = new ReactiveProperty<int>(0); 
 
     public GameObject Prefab => _info.BuildingPrefab;
     public float ProductionTime => _info.BaseProductionTime;
@@ -20,36 +21,39 @@ public class Building
     public int InputAmount => _info.BaseProductionInputAmount;
     public int MaxCapacity => _info.BaseCapacity;
 
-    public bool CanAddOrder(int ownedResourceAmount) => CurrentTotalCapacity + InputAmount <= MaxCapacity && ownedResourceAmount >= InputAmount;
-    public bool CanRemoveOrder => CurrentOrderAmount.Value > 0;
-    public bool HaveEnoughSpace() => CurrentResourceAmount.Value + OutputAmount <= MaxCapacity;
-
-    public int CurrentTotalCapacity => CurrentOrderAmount.Value + CurrentResourceAmount.Value;
+    public bool CanAddOrder(int ownedResourceAmount) => CurrentTotalCapacity.Value + InputAmount <= MaxCapacity && ownedResourceAmount >= InputAmount;
+    public bool CanRemoveOrder => _currentOrderAmount.Value > 0;
+    public bool IsCapacityFull => CurrentResourceAmount.Value == MaxCapacity;
 
     private void ResetTime() => TimeLeft.Value = ProductionTime;
+
     public Building(BuildingSO buildingSo)
     {
         _info = buildingSo;
         TimeLeft.Value = ProductionTime;
+        
+        _currentOrderAmount
+            .CombineLatest(CurrentResourceAmount, (orders, resources) => orders + resources)
+            .Subscribe(total => CurrentTotalCapacity.Value = total);
     }
 
     public void AddOrder()
     {
-        CurrentOrderAmount.Value++;
+        _currentOrderAmount.Value++;
         ResourceController.RequestRemoveResource(InputResource, InputAmount);
     } 
 
     public void RemoveOrder()
     {
-        CurrentOrderAmount.Value--;
+        _currentOrderAmount.Value--;
         ResourceController.RequestAddResource(InputResource, InputAmount);
         ResetTime();
     }
     
     public void Tick(float tickValue)
     {
-        if (!_info.IsGenerator && CurrentOrderAmount.Value == 0) return;
-        if (!HaveEnoughSpace()) return;
+        if (!_info.IsGenerator && _currentOrderAmount.Value == 0) return;
+        if(IsCapacityFull) return;
 
         TimeLeft.Value -= tickValue;
 
@@ -61,7 +65,7 @@ public class Building
     
     private void FinishProduction()
     {
-        if (!_info.IsGenerator) CurrentOrderAmount.Value--;
+        if (!_info.IsGenerator) _currentOrderAmount.Value--;
         CurrentResourceAmount.Value += OutputAmount;
 
         StartProduction(); 
@@ -69,11 +73,9 @@ public class Building
     
     public void StartProduction()
     {
-        if (!_info.IsGenerator && CurrentOrderAmount.Value == 0) return;
-        if (!HaveEnoughSpace()) return;
+        if (!_info.IsGenerator && _currentOrderAmount.Value == 0) return;
         
         ResetTime();
-        
     }
     
     public void CollectResource()

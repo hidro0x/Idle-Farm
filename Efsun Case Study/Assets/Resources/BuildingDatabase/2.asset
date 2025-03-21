@@ -29,8 +29,8 @@ MonoBehaviour:
     type: 2}
   <InputResource>k__BackingField: {fileID: 11400000, guid: b327d2e87978e0949b25a4e14e276348,
     type: 2}
-  <BaseCapacity>k__BackingField: 10
-  <BaseProductionTime>k__BackingField: 20
-  <BaseProductionInputAmount>k__BackingField: 2
+  <BaseCapacity>k__BackingField: 5
+  <BaseProductionTime>k__BackingField: 10
+  <BaseProductionInputAmount>k__BackingField: 1
   editOutputValue: 0
   baseProductionOutputAmount: 1
