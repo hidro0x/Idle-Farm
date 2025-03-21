@@ -112,7 +112,7 @@ namespace YigitDurmus
 
         public void OnPickItem(RaycastHit hitInfo)
         {
-            IClickableObject clickable = hitInfo.transform.gameObject.GetComponent<IClickableObject>();
+            IClickableObject clickable = hitInfo.transform.parent.gameObject.GetComponent<IClickableObject>();
             if (clickable != null)
             {
                 clickable.OnClicked();

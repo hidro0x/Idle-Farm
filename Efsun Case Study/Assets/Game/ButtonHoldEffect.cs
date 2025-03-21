@@ -25,13 +25,11 @@ public class ButtonHoldEffect : MonoBehaviour, IPointerDownHandler, IPointerUpHa
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        _scaleUpTween.Rewind(); 
         _scaleDownTween.Restart(); 
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        _scaleDownTween.Rewind(); 
         _scaleUpTween.Restart();
     }
 }

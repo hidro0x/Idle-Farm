@@ -34,8 +34,6 @@ public class ProductionButtonsUI : MonoBehaviour
         _rect = GetComponent<RectTransform>();
         _canvas = GetComponent<Canvas>();
         
-        AddHoldEffect(startProductionButton);
-        AddHoldEffect(removeProductionButton);
         
     }
     
@@ -71,11 +69,11 @@ public class ProductionButtonsUI : MonoBehaviour
 
         _buildingObject = buildingObject;
         _buttonSubscriptions?.Dispose();
-        
+
         //Hem Resource kaynagina hem de building kapasitesine subs olarak add order buttonunu gunceller.
-        _buttonSubscriptions = _resourceController.Resources[_buildingObject.Building.InputResource]
-            .CombineLatest(_buildingObject.Building.CurrentOrderCapacity,
-                (availableResource, currentCapacity) => _buildingObject.Building.CanAddOrder(availableResource))
+        _buttonSubscriptions = _resourceController.Resources[buildingObject.Building.InputResource]
+            .CombineLatest(buildingObject.Building.CurrentOrderAmount,
+                (availableResource, currentCapacity) => buildingObject.Building.CanAddOrder(availableResource))
             .Subscribe(canProduce =>
             {
                 startProductionButton.interactable = canProduce;
@@ -101,28 +99,5 @@ public class ProductionButtonsUI : MonoBehaviour
     private void Hide() => _canvas.enabled = false;
     
     private void SetPosition(Vector3 pos) => _rect.position = pos;
-
-    private void AddHoldEffect(Button button)
-    {
-        EventTrigger trigger = button.gameObject.GetComponent<EventTrigger>() ?? button.gameObject.AddComponent<EventTrigger>();
-
-        EventTrigger.Entry pointerDown = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
-        pointerDown.callback.AddListener(_ => StartButtonHold(button));
-
-        EventTrigger.Entry pointerUp = new EventTrigger.Entry { eventID = EventTriggerType.PointerUp };
-        pointerUp.callback.AddListener(_ => StopButtonHold(button));
-
-        trigger.triggers.Add(pointerDown);
-        trigger.triggers.Add(pointerUp);
-    }
     
-    private void StartButtonHold(Button button)
-    {
-        button.transform.DOScale(Vector3.one * 0.9f, 0.1f).SetEase(Ease.OutQuad);
-    }
-    
-    private void StopButtonHold(Button button)
-    {
-        button.transform.DOScale(Vector3.one, 0.1f).SetEase(Ease.OutQuad);
-    }
 }

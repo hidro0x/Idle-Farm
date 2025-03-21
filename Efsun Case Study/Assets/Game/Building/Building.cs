@@ -8,7 +8,7 @@ public class Building
 {
     private BuildingSO _info;
     
-    public ReactiveProperty<int> CurrentOrderCapacity { get; } = new ReactiveProperty<int>();
+    public ReactiveProperty<int> CurrentOrderAmount { get; } = new ReactiveProperty<int>();
     public ReactiveProperty<float> TimeLeft { get; } = new ReactiveProperty<float>();
     public ReactiveProperty<int> CurrentResourceAmount { get; } = new ReactiveProperty<int>();
 
@@ -20,9 +20,11 @@ public class Building
     public int InputAmount => _info.BaseProductionInputAmount;
     public int MaxCapacity => _info.BaseCapacity;
 
-    public bool CanAddOrder(int ownedResourceAmount) => CurrentOrderCapacity.Value < MaxCapacity && ownedResourceAmount >= InputAmount;
-    public bool CanRemoveOrder => CurrentOrderCapacity.Value > 0;
+    public bool CanAddOrder(int ownedResourceAmount) => CurrentTotalCapacity + InputAmount <= MaxCapacity && ownedResourceAmount >= InputAmount;
+    public bool CanRemoveOrder => CurrentOrderAmount.Value > 0;
     public bool HaveEnoughSpace() => CurrentResourceAmount.Value + OutputAmount <= MaxCapacity;
+
+    public int CurrentTotalCapacity => CurrentOrderAmount.Value + CurrentResourceAmount.Value;
 
     private void ResetTime() => TimeLeft.Value = ProductionTime;
     public Building(BuildingSO buildingSo)
@@ -33,20 +35,21 @@ public class Building
 
     public void AddOrder()
     {
-        CurrentOrderCapacity.Value++;
+        CurrentOrderAmount.Value++;
         ResourceController.RequestRemoveResource(InputResource, InputAmount);
     } 
 
     public void RemoveOrder()
     {
-        CurrentOrderCapacity.Value--;
+        CurrentOrderAmount.Value--;
         ResourceController.RequestAddResource(InputResource, InputAmount);
         ResetTime();
     }
     
     public void Tick(float tickValue)
     {
-        if (!_info.IsGenerator && CurrentOrderCapacity.Value == 0) return;
+        if (!_info.IsGenerator && CurrentOrderAmount.Value == 0) return;
+        if (!HaveEnoughSpace()) return;
 
         TimeLeft.Value -= tickValue;
 
@@ -58,26 +61,19 @@ public class Building
     
     private void FinishProduction()
     {
-        if (!HaveEnoughSpace()) return;
-
+        if (!_info.IsGenerator) CurrentOrderAmount.Value--;
         CurrentResourceAmount.Value += OutputAmount;
-        TimeLeft.Value = 0;
-        
-        if (_info.IsGenerator || CurrentOrderCapacity.Value > 0)
-        {
-            StartProduction(); 
-        }
+
+        StartProduction(); 
     }
     
     public void StartProduction()
     {
-        if (!_info.IsGenerator && CurrentOrderCapacity.Value <= 0) return;
+        if (!_info.IsGenerator && CurrentOrderAmount.Value == 0) return;
         if (!HaveEnoughSpace()) return;
         
         ResetTime();
-
-        if (!_info.IsGenerator) 
-            RemoveOrder();
+        
     }
     
     public void CollectResource()

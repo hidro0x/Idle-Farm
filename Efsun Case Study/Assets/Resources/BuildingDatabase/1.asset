@@ -31,4 +31,5 @@ MonoBehaviour:
   <BaseCapacity>k__BackingField: 5
   <BaseProductionTime>k__BackingField: 10
   <BaseProductionInputAmount>k__BackingField: 0
-  <BaseProductionOutputAmount>k__BackingField: 3
+  editOutputValue: 0
+  baseProductionOutputAmount: 1
