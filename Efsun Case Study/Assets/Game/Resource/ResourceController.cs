@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-public class ResourceController : IDisposable
+public class ResourceController : IDisposable, ISaveable
 {
     private Dictionary<ResourceSO, ReactiveProperty<int>> _resources = new();
     private readonly CompositeDisposable _resourceControlSubscriptions = new CompositeDisposable();
@@ -31,6 +32,25 @@ public class ResourceController : IDisposable
             .Subscribe(tuple => AddResource(tuple.resource, tuple.amount)).AddTo(_resourceControlSubscriptions);
         OnResourceRemoveRequested
             .Subscribe(tuple => RemoveResource(tuple.resource, tuple.amount)).AddTo(_resourceControlSubscriptions);
+    }
+    
+    public void SetData(Dictionary<int, int> data)
+    {
+        foreach (var resource in data)
+        {
+            _resources.First(x=> x.Key.ID == resource.Key).Value.Value = resource.Value;
+        }
+    }
+    
+    public Dictionary<int, int> GetData()
+    {
+        var newData = new Dictionary<int, int>();
+        foreach (var resource in _resources)
+        {
+            newData.Add(resource.Key.ID, resource.Value.Value);
+        }
+
+        return newData;
     }
 
     public void Dispose()
@@ -63,4 +83,33 @@ public class ResourceController : IDisposable
     {
         OnResourceAddRequested.OnNext((resource, amount));
     }
+
+    public void LoadData(Data data)
+    {
+        foreach (var entry in data.ResourceDatas)
+        {
+            var matchingResource = _resources.Keys.FirstOrDefault(r => r.ID == entry.Key);
+            if (matchingResource != null)
+            {
+                _resources[matchingResource].Value = entry.Value;
+            }
+        }
+    }
+
+    public void SaveData(Data data)
+    {
+        foreach (var resource in _resources)
+        {
+            if (data.ResourceDatas.ContainsKey(resource.Key.ID))
+            {
+                data.ResourceDatas[resource.Key.ID] = resource.Value.Value;
+            }
+            else
+            {
+                data.ResourceDatas.Add(resource.Key.ID, resource.Value.Value);
+            }
+            
+        }
+    }
 }
+

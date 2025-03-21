@@ -5,28 +5,50 @@ using Zenject;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public class BuildingController
+public class BuildingController : ISaveable
 {
-    private readonly List<BuildingObject> _buildings = new List<BuildingObject>();
+    private readonly Dictionary<int, Building> _buildings = new Dictionary<int, Building>();
 
-    public void AddBuilding(BuildingObject building)
+    public void AddBuilding(Building building)
     {
-        if (!_buildings.Contains(building))
+        if (!_buildings.ContainsKey(building.ID))
         {
-            _buildings.Add(building);
+            _buildings.Add(building.ID, building);
         }
     }
 
-    public void RemoveBuilding(BuildingObject building)
+    public void RemoveBuilding(Building building)
     {
-        if (_buildings.Contains(building))
+        if (_buildings.ContainsKey(building.ID))
         {
-            _buildings.Remove(building);
+            _buildings.Remove(building.ID);
+        }
+    }
+    
+
+    public void LoadData(Data data)
+    {
+        foreach (var buildingData in data.BuildingDatas)    
+        {
+            if (_buildings.ContainsKey(buildingData.Key))
+            {
+                _buildings[buildingData.Key].SetData(buildingData.Value);
+            }
         }
     }
 
-    public BuildingObject GetBuilding(BuildingObject building)
+    public void SaveData(Data data)
     {
-        return _buildings.Contains(building) ? building : null;
+        foreach (var building in _buildings)    
+        {
+            if (data.BuildingDatas.ContainsKey(building.Key))
+            {
+                data.BuildingDatas[building.Key] = building.Value.GetData();
+            }
+            else
+            {
+                data.BuildingDatas.Add(building.Key, building.Value.GetData());
+            }
+        }
     }
 }

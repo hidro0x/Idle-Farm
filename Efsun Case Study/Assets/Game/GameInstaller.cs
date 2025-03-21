@@ -10,12 +10,12 @@ public class GameInstaller : MonoInstaller
 
     public override void InstallBindings()
     {
+        Container.BindInterfacesAndSelfTo<DataService>().AsSingle().NonLazy();
+
+        Container.Bind<ISaveable>().To<ResourceController>().AsSingle();
+        Container.Bind<ISaveable>().To<BuildingController>().AsSingle();
+        
         Container.BindInterfacesAndSelfTo<TimeController>().AsSingle();
-
-        Container.Bind<BuildingController>().AsSingle();
-        Container.Bind<ResourceController>().AsSingle();
-
-
         Container.Bind<GameSettings>().FromScriptableObject(gameSettings).AsSingle();
     }
 }

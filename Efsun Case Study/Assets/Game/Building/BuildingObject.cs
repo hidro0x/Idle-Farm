@@ -20,7 +20,7 @@ public class BuildingObject : SerializedMonoBehaviour, IClickableObject
     public void Init(BuildingController buildingController, TimeController timeController)
     {
         Building = new Building(attachedBuilding);
-        buildingController.AddBuilding(this);
+        buildingController.AddBuilding(Building);
 
         _buildingTransform = Instantiate(Building.Prefab, transform.GetChild(0)).transform;
 

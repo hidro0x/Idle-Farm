@@ -13,6 +13,7 @@ public class Building
     public ReactiveProperty<int> CurrentResourceAmount { get; } = new ReactiveProperty<int>();
     public ReactiveProperty<int> CurrentTotalCapacity { get; } = new ReactiveProperty<int>(0);
 
+    public int ID => _info.Id;
     public GameObject Prefab => _info.BuildingPrefab;
     public float ProductionTime => _info.BaseProductionTime;
     public ResourceSO InputResource => _info.InputResource;
@@ -104,4 +105,39 @@ public class Building
 
         CollectResource();
     }
+
+    public void SetData(BuildingData data)
+    {
+        _currentOrderAmount.Value = data.CurrentOrderAmount;
+        TimeLeft.Value = data.TimeLeft;
+        CurrentResourceAmount.Value = data.CurrentResourceAmount;
+    }
+    
+    public BuildingData GetData()
+    {
+        var newData = new BuildingData
+        {
+            CurrentOrderAmount = _currentOrderAmount.Value,
+            TimeLeft = TimeLeft.Value,
+            CurrentResourceAmount = CurrentResourceAmount.Value
+        };
+
+        return newData;
+    }
+}
+
+[System.Serializable]
+public struct BuildingData
+{
+    public int CurrentOrderAmount{ get; set; }
+    public int CurrentResourceAmount{ get; set; }
+    public float TimeLeft{ get; set; }
+    public BuildingData(int currentOrderAmount, int currentResourceAmount, float timeLeft)
+    {
+        CurrentOrderAmount = currentOrderAmount;
+        CurrentResourceAmount = currentResourceAmount;
+        TimeLeft = timeLeft;
+    }
+    
+    
 }
