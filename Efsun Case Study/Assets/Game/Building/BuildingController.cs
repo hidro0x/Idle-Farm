@@ -7,8 +7,14 @@ using UnityEngine;
 
 public class BuildingController : ISaveable
 {
+
     private readonly Dictionary<int, Building> _buildings = new Dictionary<int, Building>();
 
+    [Inject]
+    public void Construct(DataService dataService)
+    {
+        dataService.Register(this);
+    }
     public void AddBuilding(Building building)
     {
         if (!_buildings.ContainsKey(building.ID))

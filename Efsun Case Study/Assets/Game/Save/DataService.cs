@@ -17,10 +17,16 @@ public class DataService : IInitializable
     {
         _saveables = saveables;
     }
-
-    public async void Initialize()
+    
+    public void Initialize()
     {
-        await LoadDataAndNextSceneAsync();
+        UniTask.Void(async () => { await LoadDataAndNextSceneAsync(); });
+    }
+    
+    public void Register(ISaveable saveable)
+    {
+        if (!_saveables.Contains(saveable))
+            _saveables.Add(saveable);
     }
 
     private async UniTask LoadDataAndNextSceneAsync()
@@ -53,4 +59,6 @@ public class DataService : IInitializable
         string json = JsonUtility.ToJson(_data, true);
         await File.WriteAllTextAsync(SaveFilePath, json);
     }
+
+    
 }

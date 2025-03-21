@@ -30,6 +30,6 @@ public class ResourceBarUI : MonoBehaviour
 
     private void OnDisable()
     {
-        _disposable.Dispose();
+        _disposable?.Dispose();
     }
 }

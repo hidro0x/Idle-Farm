@@ -24,7 +24,6 @@ public class Building
 
     public bool CanAddOrder(int ownedResourceAmount) => CurrentTotalCapacity.Value + InputAmount <= MaxCapacity &&
                                                         ownedResourceAmount >= InputAmount;
-
     public bool CanRemoveOrder => _currentOrderAmount.Value > 0;
     public bool IsCapacityFull => CurrentResourceAmount.Value == MaxCapacity;
 
@@ -33,7 +32,7 @@ public class Building
     public Building(BuildingSO buildingSo)
     {
         _info = buildingSo;
-        TimeLeft.Value = ProductionTime;
+        ResetTime();
 
         _currentOrderAmount
             .CombineLatest(CurrentResourceAmount, (orders, resources) => orders + resources)

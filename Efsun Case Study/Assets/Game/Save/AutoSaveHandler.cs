@@ -13,6 +13,7 @@ public class AutoSaveHandler : MonoBehaviour
 
     private void OnApplicationPause(bool pause)
     {
+        Debug.Log("Kaydediliyor.");
         if (pause)
         {
             _ = _dataService.SaveAsync();

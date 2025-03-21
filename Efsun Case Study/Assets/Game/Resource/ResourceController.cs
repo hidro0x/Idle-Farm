@@ -21,8 +21,9 @@ public class ResourceController : IDisposable, ISaveable
     public Dictionary<ResourceSO, ReactiveProperty<int>> Resources => _resources;
 
     [Inject]
-    public ResourceController(GameSettings settings)
+    public ResourceController(GameSettings settings, DataService dataService)
     {
+        dataService.Register(this);
         foreach (var resource in settings.Resources)
         {
             _resources.Add(resource.Key, new ReactiveProperty<int>(resource.Value));
@@ -32,6 +33,7 @@ public class ResourceController : IDisposable, ISaveable
             .Subscribe(tuple => AddResource(tuple.resource, tuple.amount)).AddTo(_resourceControlSubscriptions);
         OnResourceRemoveRequested
             .Subscribe(tuple => RemoveResource(tuple.resource, tuple.amount)).AddTo(_resourceControlSubscriptions);
+        
     }
     
     public void SetData(Dictionary<int, int> data)
