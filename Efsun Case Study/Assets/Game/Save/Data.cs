@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using Sherbert.Framework.Generic;
 using UnityEngine;
 
 [System.Serializable]
 public class Data
 {
-    public Dictionary<int, int> ResourceDatas = new Dictionary<int, int>();
-    public Dictionary<int, BuildingData> BuildingDatas = new Dictionary<int, BuildingData>();
+    public SerializableDictionary<int, int> ResourceDatas = new SerializableDictionary<int, int>();
+    public SerializableDictionary<int, BuildingData> BuildingDatas = new SerializableDictionary<int, BuildingData>();
 }
