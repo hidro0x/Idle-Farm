@@ -12,11 +12,11 @@ public class InfoSliderUI : MonoBehaviour
 {
     [SerializeField] private Image resourceIconImage;
     [SerializeField] private TextMeshProUGUI productionCountText, productionTimeText, resourceCountText;
-    [SerializeField]private Slider slider;
-    
+    [SerializeField] private Slider slider;
+
     public RectTransform Rect { get; private set; }
     private Canvas _canvas;
-    
+
     private CompositeDisposable _disposables = new CompositeDisposable();
 
     private void Awake()
@@ -30,18 +30,19 @@ public class InfoSliderUI : MonoBehaviour
     /// </summary>
     public void Init(Building building)
     {
-
         _disposables.Clear();
 
         resourceIconImage.sprite = building.OutputResource.Icon;
-        
+
         building.CurrentTotalCapacity
             .Subscribe(_ =>
             {
-                productionCountText.text = building.CurrentTotalCapacity.Value > 0 ? $"{building.CurrentTotalCapacity}/{building.MaxCapacity}" : String.Empty;
+                productionCountText.text = building.CurrentTotalCapacity.Value > 0
+                    ? $"{building.CurrentTotalCapacity}/{building.MaxCapacity}"
+                    : String.Empty;
             })
             .AddTo(_disposables);
-        
+
         building.TimeLeft
             .Subscribe(time =>
             {
@@ -57,7 +58,7 @@ public class InfoSliderUI : MonoBehaviour
                 }
             })
             .AddTo(_disposables);
-        
+
         building.CurrentResourceAmount
             .Subscribe(amount => resourceCountText.text = amount.ToString())
             .AddTo(_disposables);
@@ -67,7 +68,7 @@ public class InfoSliderUI : MonoBehaviour
     {
         _canvas.enabled = true;
     }
-    
+
     public void Close()
     {
         _canvas.enabled = false;
@@ -78,4 +79,3 @@ public class InfoSliderUI : MonoBehaviour
         _disposables.Dispose();
     }
 }
-

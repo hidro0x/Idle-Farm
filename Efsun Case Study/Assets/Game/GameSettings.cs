@@ -6,11 +6,14 @@ using UnityEngine;
 
 public class GameSettings : SerializedScriptableObject
 {
-    [field:SerializeField] public float TickValue { get; private set; }
+    [field: SerializeField] public float TickValue { get; private set; }
     [field: SerializeField] private bool editStartingValues;
-    [field:EnableIf("editStartingValues")]
-    [field:DictionaryDrawerSettings(KeyLabel = "Resource SO", ValueLabel = "Start Value")]
-    [SerializeField] private Dictionary<ResourceSO, int> resources = new Dictionary<ResourceSO, int>();
+
+    [field: EnableIf("editStartingValues")]
+    [field: DictionaryDrawerSettings(KeyLabel = "Resource SO", ValueLabel = "Start Value")]
+    [SerializeField]
+    private Dictionary<ResourceSO, int> resources = new Dictionary<ResourceSO, int>();
+
     public Dictionary<ResourceSO, int> Resources => resources;
 
     [Button]
@@ -24,7 +27,7 @@ public class GameSettings : SerializedScriptableObject
     {
         TickValue = 1f;
     }
-    
+
     private void GetAndSortAllResources()
     {
         resources.Clear();
@@ -35,10 +38,8 @@ public class GameSettings : SerializedScriptableObject
             resources.Add(so, 0);
         }
 
-        var sortedByValue = resources.OrderBy(kvp => kvp.Value).
-            ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        var sortedByValue = resources.OrderBy(kvp => kvp.Value).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
         resources = sortedByValue;
     }
-
 }

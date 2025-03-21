@@ -11,21 +11,16 @@ public class ButtonHoldEffect : MonoBehaviour, IPointerDownHandler, IPointerUpHa
     private void Awake()
     {
         _rectTransform = GetComponent<RectTransform>();
-        
-        _scaleDownTween = _rectTransform.DOScale(Vector3.one * 0.9f, 0.1f)
-            .SetEase(Ease.OutQuad)
-            .SetAutoKill(false)
+
+        _scaleDownTween = _rectTransform.DOScale(Vector3.one * 0.9f, 0.1f).SetEase(Ease.OutQuad).SetAutoKill(false)
             .Pause();
 
-        _scaleUpTween = _rectTransform.DOScale(Vector3.one, 0.1f)
-            .SetEase(Ease.OutQuad)
-            .SetAutoKill(false)
-            .Pause();
+        _scaleUpTween = _rectTransform.DOScale(Vector3.one, 0.1f).SetEase(Ease.OutQuad).SetAutoKill(false).Pause();
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        _scaleDownTween.Restart(); 
+        _scaleDownTween.Restart();
     }
 
     public void OnPointerUp(PointerEventData eventData)

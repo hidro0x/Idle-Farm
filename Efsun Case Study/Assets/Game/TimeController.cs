@@ -6,19 +6,19 @@ public class TimeController : IDisposable
 {
     private readonly Subject<float> _onTick = new Subject<float>();
     public IObservable<float> OnTick => _onTick;
-    
+
     private readonly float _tickValue;
     private readonly IDisposable _tickSubscription;
 
     [Inject]
     public TimeController(GameSettings gameSettings)
     {
-        _tickValue = gameSettings.TickValue; 
-        
+        _tickValue = gameSettings.TickValue;
+
         _tickSubscription = Observable.Interval(TimeSpan.FromSeconds(_tickValue))
             .Subscribe(_ => _onTick.OnNext(_tickValue));
     }
-    
+
     public void Dispose()
     {
         _tickSubscription.Dispose();

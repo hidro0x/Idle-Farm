@@ -20,21 +20,16 @@ public class ResourceBarUI : MonoBehaviour
     {
         Init(new KeyValuePair<ResourceSO, ReactiveProperty<int>>(resource, resourceController.Resources[resource]));
     }
-    
+
     private void Init(KeyValuePair<ResourceSO, ReactiveProperty<int>> kvp)
     {
-        _disposable = kvp.Value
-            .Subscribe(capacity => {
-                amountText.text = $"{capacity}";
-            })
-            .AddTo(this);
+        _disposable = kvp.Value.Subscribe(capacity => { amountText.text = $"{capacity}"; }).AddTo(this);
         iconImg.sprite = kvp.Key.Icon;
     }
-    
+
 
     private void OnDisable()
     {
         _disposable.Dispose();
     }
 }
-

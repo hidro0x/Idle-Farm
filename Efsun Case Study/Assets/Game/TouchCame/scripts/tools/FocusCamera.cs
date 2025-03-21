@@ -6,7 +6,6 @@ using UniRx;
 
 namespace YigitDurmus
 {
-
     /// <summary>
     /// A little helper script that allows to focus the camera on a transform either
     /// via code, or by wiring it up with one of the many events of the mobile touch camera
@@ -15,9 +14,7 @@ namespace YigitDurmus
     [RequireComponent(typeof(MobileTouchCamera))]
     public class FocusCamera : MonoBehaviourWrapped
     {
-
-        [SerializeField]
-        private float transitionDuration = 0.5f;
+        [SerializeField] private float transitionDuration = 0.5f;
 
         [SerializeField]
         private AnimationCurve transitionCurve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(1, 1));
@@ -46,7 +43,7 @@ namespace YigitDurmus
 
         private float zoomAmount;
         public Transform moveToObject;
-        
+
 
         public void Awake()
         {
@@ -54,12 +51,10 @@ namespace YigitDurmus
             isTransitionStarted = false;
             zoomAmount = MobileTouchCamera.CamZoomMin + 2;
         }
-        
 
 
         public void LateUpdate()
         {
-
             if (MobileTouchCamera.IsDragging || MobileTouchCamera.IsPinching)
             {
                 timeTransitionStart = Time.time - transitionDuration;
@@ -122,7 +117,6 @@ namespace YigitDurmus
                     FocusCameraOnTransform(hitInfo.transform);
                 }
             }
-
         }
 
         public void OnPickItem2D(RaycastHit2D hitInfo2D)
@@ -141,19 +135,20 @@ namespace YigitDurmus
             {
                 return;
             }
+
             FocusCameraOnTarget(targetTransform);
         }
-        
+
 
         public void FocusCameraOnTarget(Transform target)
         {
             moveToObject = target;
             resetPos = Transform.position;
             isFocusingToTarget = true;
-            var tempPos = new Vector3(target.position.x, target.position.y-3, target.position.z);
+            var tempPos = new Vector3(target.position.x, target.position.y - 3, target.position.z);
             FocusCameraOnTarget(tempPos, Transform.rotation, zoomAmount);
         }
-        
+
         public void MoveCameraOnTarget(Vector3 targetPosition)
         {
             var tempPos = new Vector3(targetPosition.x, targetPosition.y, targetPosition.z);
@@ -172,7 +167,6 @@ namespace YigitDurmus
 
         public void FocusCameraOnTarget(Vector3 targetPosition, Quaternion targetRotation, float targetZoom)
         {
-
             timeTransitionStart = Time.time;
             posTransitionStart = Transform.position;
             rotTransitionStart = Transform.rotation;
@@ -182,7 +176,8 @@ namespace YigitDurmus
 
             MobileTouchCamera.Transform.rotation = targetRotation;
             MobileTouchCamera.CamZoom = targetZoom;
-            Vector3 intersectionScreenCenterEnd = MobileTouchCamera.GetIntersectionPoint(MobileTouchCamera.Cam.ScreenPointToRay(new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0)));
+            Vector3 intersectionScreenCenterEnd = MobileTouchCamera.GetIntersectionPoint(
+                MobileTouchCamera.Cam.ScreenPointToRay(new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0)));
             Vector3 focusVector = targetPosition - intersectionScreenCenterEnd;
             posTransitionEnd = MobileTouchCamera.GetClampToBoundaries(posTransitionStart + focusVector, true);
             MobileTouchCamera.Transform.rotation = rotTransitionStart;
@@ -206,7 +201,7 @@ namespace YigitDurmus
 
         public void ZoomOut()
         {
-            if(moveToObject == null) return;
+            if (moveToObject == null) return;
             moveToObject = null;
             timeTransitionStart = Time.time;
             zoomTransitionStart = zoomAmount;

@@ -5,10 +5,10 @@ using Zenject;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public class BuildingController 
+public class BuildingController
 {
     private readonly List<BuildingObject> _buildings = new List<BuildingObject>();
-    
+
     public void AddBuilding(BuildingObject building)
     {
         if (!_buildings.Contains(building))
