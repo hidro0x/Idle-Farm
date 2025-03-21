@@ -107,18 +107,18 @@ public class Building
 
     public void SetData(BuildingData data)
     {
-        _currentOrderAmount.Value = data.CurrentOrderAmount;
-        TimeLeft.Value = data.TimeLeft;
-        CurrentResourceAmount.Value = data.CurrentResourceAmount;
+        _currentOrderAmount.Value = data.currentOrderAmount;
+        TimeLeft.Value = data.timeLeft;
+        CurrentResourceAmount.Value = data.currentResourceAmount;
     }
     
     public BuildingData GetData()
     {
         var newData = new BuildingData
         {
-            CurrentOrderAmount = _currentOrderAmount.Value,
-            TimeLeft = TimeLeft.Value,
-            CurrentResourceAmount = CurrentResourceAmount.Value
+            currentOrderAmount = _currentOrderAmount.Value,
+            timeLeft = TimeLeft.Value,
+            currentResourceAmount = CurrentResourceAmount.Value
         };
 
         return newData;
@@ -128,14 +128,14 @@ public class Building
 [System.Serializable]
 public struct BuildingData
 {
-    public int CurrentOrderAmount{ get; set; }
-    public int CurrentResourceAmount{ get; set; }
-    public float TimeLeft{ get; set; }
+    public int currentOrderAmount;
+    public int currentResourceAmount;
+    public float timeLeft;
     public BuildingData(int currentOrderAmount, int currentResourceAmount, float timeLeft)
     {
-        CurrentOrderAmount = currentOrderAmount;
-        CurrentResourceAmount = currentResourceAmount;
-        TimeLeft = timeLeft;
+        this.currentOrderAmount = currentOrderAmount;
+        this.currentResourceAmount = currentResourceAmount;
+        this.timeLeft = timeLeft;
     }
     
     
