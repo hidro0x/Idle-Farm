@@ -6,15 +6,12 @@ using Zenject;
 
 public class GameInstaller : MonoInstaller
 {
-    //ScriptableObjects
     [SerializeField]private GameSettings gameSettings;
-    //Controller's
-    private TimeController timeController;
-    private BuildingController buildingController;
     
     public override void InstallBindings()
     {
-        Container.Bind<TimeController>().AsSingle();
+        Container.BindInterfacesAndSelfTo<TimeController>().AsSingle();
+        
         Container.Bind<BuildingController>().AsSingle();
         Container.Bind<ResourceController>().AsSingle();
         

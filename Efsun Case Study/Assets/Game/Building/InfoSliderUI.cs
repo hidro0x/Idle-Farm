@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -47,7 +48,7 @@ public class InfoSliderUI : MonoBehaviour
                 if (building.TimeLeft.Value > 0)
                 {
                     productionTimeText.text = $"{time:0.0} sn";
-                    slider.value = time / building.ProductionTime;
+                    slider.DOValue(time / building.ProductionTime, 0.1f);
                 }
                 else
                 {
