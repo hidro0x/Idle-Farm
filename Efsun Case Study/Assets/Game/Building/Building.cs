@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UniRx;
+using UniRx.Triggers;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -80,13 +81,14 @@ public class Building
     }
     
 
-    public void CollectResource()
+    public void CollectResource(Vector3 pos)
     {
         if (CurrentResourceAmount.Value > 0)
         {
             int amount = CurrentResourceAmount.Value;
             CurrentResourceAmount.Value = 0;
             ResourceController.RequestAddResource(OutputResource, amount);
+            ResourceCollectAnimation.OnResourceCollected?.Invoke(pos, OutputResource, amount);
             if (_info.IsGenerator)
             {
                 ResetTime();
@@ -102,7 +104,7 @@ public class Building
             return;
         }
 
-        CollectResource();
+        CollectResource(buildingObject.transform.position);
     }
     
     public void SkipTime(int skipAmount)

@@ -57,7 +57,7 @@ public class ProductionButtonsUI : MonoBehaviour
     {
         if (IsOpen && IsSame(buildingObject))
         {
-            buildingObject.Building.CollectResource();
+            buildingObject.Building.CollectResource(buildingObject.transform.position);
             return;
         }
 
