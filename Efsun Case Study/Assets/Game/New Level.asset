@@ -15,11 +15,7 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 11400000, guid: c3b68abc4f03d1d4985e51687b047b3d, type: 2}
-    - {fileID: 11400000, guid: 42373ec5a2e754b43a277823b90d59e6, type: 2}
-    - {fileID: 11400000, guid: 692a24c2aa480664691a0970e85a9919, type: 2}
-    - {fileID: 11400000, guid: 9bae79ddffadfe54e9394ba74e642e58, type: 2}
+    ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -30,22 +26,37 @@ MonoBehaviour:
       Data: 0|BuildingSO[,], Assembly-CSharp
     - Name: 
       Entry: 12
-      Data: 4
+      Data: 9
     - Name: ranks
       Entry: 1
-      Data: 2|2
+      Data: 3|3
     - Name: 
-      Entry: 10
-      Data: 0
+      Entry: 6
+      Data: 
     - Name: 
-      Entry: 10
-      Data: 1
+      Entry: 6
+      Data: 
     - Name: 
-      Entry: 10
-      Data: 2
+      Entry: 6
+      Data: 
     - Name: 
-      Entry: 10
-      Data: 3
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 6
+      Data: 
     - Name: 
       Entry: 13
       Data: 
@@ -57,5 +68,5 @@ MonoBehaviour:
     type: 3}
   <BuildingPrefab>k__BackingField: {fileID: 1792318282867290827, guid: 6792bd3c10ef4534aa377f74d7d97827,
     type: 3}
-  <Spacing>k__BackingField: 20
-  <Size>k__BackingField: 2
+  <Spacing>k__BackingField: 10
+  <Size>k__BackingField: 3

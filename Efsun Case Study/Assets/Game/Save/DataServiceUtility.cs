@@ -2,6 +2,8 @@ using UnityEditor;
 using UnityEngine;
 using System.IO;
 
+#if  UNITY_EDITOR
+
 public static class DataServiceUtility
 {
     private static string SaveFilePath => Application.persistentDataPath + "/save.save";
@@ -19,3 +21,4 @@ public static class DataServiceUtility
         }
     }
 }
+#endif
