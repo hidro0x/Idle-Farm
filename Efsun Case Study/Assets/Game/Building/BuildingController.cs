@@ -34,12 +34,19 @@ public class BuildingController : ISaveable
 
     public void LoadData(Data data)
     {
+        var totalTimePassed = (int)DateTime.UtcNow.Subtract(data.LastSavedTime).TotalSeconds;
         foreach (var buildingData in data.BuildingDatas)    
         {
             if (_buildings.ContainsKey(buildingData.Key))
             {
                 _buildings[buildingData.Key].SetData(buildingData.Value);
+                
             }
+        }
+
+        foreach (var building in _buildings)
+        {
+            building.Value.SkipTime(totalTimePassed);
         }
     }
 

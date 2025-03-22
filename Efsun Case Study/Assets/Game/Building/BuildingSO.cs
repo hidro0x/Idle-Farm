@@ -40,7 +40,7 @@ public class BuildingSO : SerializedScriptableObject
 
     [field: MinValue(1)]
     [field: SerializeField]
-    public float BaseProductionTime { get; private set; }
+    public int BaseProductionTime { get; private set; }
 
     [field: HideIf("IsGenerator")]
     [field: MinValue(1)]

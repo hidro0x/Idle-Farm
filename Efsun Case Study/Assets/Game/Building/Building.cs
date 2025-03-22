@@ -15,7 +15,7 @@ public class Building
 
     public int ID => _info.Id;
     public GameObject Prefab => _info.BuildingPrefab;
-    public float ProductionTime => _info.BaseProductionTime;
+    public int ProductionTime => _info.BaseProductionTime;
     public ResourceSO InputResource => _info.InputResource;
     public ResourceSO OutputResource => _info.OutputResource;
     public int OutputAmount => _info.BaseProductionOutputAmount;
@@ -104,7 +104,26 @@ public class Building
 
         CollectResource();
     }
-
+    
+    public void SkipTime(int skipAmount)
+    {
+        var totalCurrentTimeLeft = (int)TimeLeft.Value + (_currentOrderAmount.Value * ProductionTime);
+        if (skipAmount >= totalCurrentTimeLeft)
+        {
+            CurrentResourceAmount.Value += _currentOrderAmount.Value;
+            _currentOrderAmount.Value = 0;
+            TimeLeft.Value = 0;
+            return;
+        }
+        
+        int a = (skipAmount / ProductionTime); //Kac adet order tamamladigi
+        int b = skipAmount % ProductionTime; //Geriye kalan zamanin kac oldugu
+            
+        CurrentResourceAmount.Value += a;
+        _currentOrderAmount.Value -= a;
+        TimeLeft.Value = b;
+    }
+    
     public void SetData(BuildingData data)
     {
         _currentOrderAmount.Value = data.currentOrderAmount;
@@ -117,7 +136,7 @@ public class Building
         var newData = new BuildingData
         {
             currentOrderAmount = _currentOrderAmount.Value,
-            timeLeft = TimeLeft.Value,
+            timeLeft = (int)TimeLeft.Value,
             currentResourceAmount = CurrentResourceAmount.Value
         };
 
@@ -130,8 +149,8 @@ public struct BuildingData
 {
     public int currentOrderAmount;
     public int currentResourceAmount;
-    public float timeLeft;
-    public BuildingData(int currentOrderAmount, int currentResourceAmount, float timeLeft)
+    public int timeLeft;
+    public BuildingData(int currentOrderAmount, int currentResourceAmount, int timeLeft)
     {
         this.currentOrderAmount = currentOrderAmount;
         this.currentResourceAmount = currentResourceAmount;

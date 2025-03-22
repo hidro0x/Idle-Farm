@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Cysharp.Threading.Tasks;
@@ -60,6 +61,7 @@ public class DataService : IInitializable
             saveable.SaveData(_data);
         }
 
+        _data.LastSavedTime = DateTime.UtcNow;
         string json = JsonUtility.ToJson(_data, true);
         await File.WriteAllTextAsync(SaveFilePath, json);
     }
