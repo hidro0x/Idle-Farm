@@ -39,7 +39,11 @@ public class DataService : IInitializable
         else _data = new Data();
 
         int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
-        await SceneManager.LoadSceneAsync(nextSceneIndex);
+        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            await SceneManager.LoadSceneAsync(nextSceneIndex);
+        }
+
         await UniTask.NextFrame(); 
         
         foreach (var saveable in _saveables)

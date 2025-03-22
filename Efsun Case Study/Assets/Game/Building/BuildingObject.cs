@@ -16,6 +16,11 @@ public class BuildingObject : SerializedMonoBehaviour, IClickableObject
     private Transform _buildingTransform;
     private Tweener _clickAnim;
 
+    public void SetBuilding(BuildingSO buildingSo)
+    {
+        attachedBuilding = buildingSo;
+    }
+
     [Inject]
     public void Init(BuildingController buildingController, TimeController timeController)
     {

@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d67d643abdb9394a8a947c91d23cc88, type: 3}
+  m_Name: New Level
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 11400000, guid: 42373ec5a2e754b43a277823b90d59e6, type: 2}
+    - {fileID: 11400000, guid: 9bae79ddffadfe54e9394ba74e642e58, type: 2}
+    - {fileID: 11400000, guid: 692a24c2aa480664691a0970e85a9919, type: 2}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: Map
+      Entry: 7
+      Data: 0|BuildingSO[,], Assembly-CSharp
+    - Name: 
+      Entry: 12
+      Data: 9
+    - Name: ranks
+      Entry: 1
+      Data: 3|3
+    - Name: 
+      Entry: 10
+      Data: 0
+    - Name: 
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 10
+      Data: 1
+    - Name: 
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 10
+      Data: 2
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+  levelGridBuilder: {fileID: 0}
+  groundObject: {fileID: 1210390237875620264, guid: 336b55b8e72ce3843b0b50076ae29c02,
+    type: 3}
+  <BuildingPrefab>k__BackingField: {fileID: 1792318282867290827, guid: 6792bd3c10ef4534aa377f74d7d97827,
+    type: 3}
+  <Spacing>k__BackingField: 10
+  <Size>k__BackingField: 3
