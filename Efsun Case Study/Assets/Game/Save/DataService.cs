@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Cysharp.Threading.Tasks;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
+using Formatting = System.Xml.Formatting;
 
 public class DataService : IInitializable
 {
@@ -35,7 +37,7 @@ public class DataService : IInitializable
         if (File.Exists(SaveFilePath))
         {
             var json = await File.ReadAllTextAsync(SaveFilePath);
-            _data = JsonUtility.FromJson<Data>(json);
+            _data = JsonConvert.DeserializeObject<Data>(json);
         }
         else _data = new Data();
 
@@ -62,7 +64,7 @@ public class DataService : IInitializable
         }
 
         _data.LastSavedTime = DateTime.UtcNow;
-        string json = JsonUtility.ToJson(_data, true);
+        string json = JsonConvert.SerializeObject(_data, formatting: Newtonsoft.Json.Formatting.Indented);
         await File.WriteAllTextAsync(SaveFilePath, json);
     }
 

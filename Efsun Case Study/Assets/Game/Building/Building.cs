@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UniRx;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [System.Serializable]
@@ -52,6 +53,15 @@ public class Building
         ResetTime();
     }
 
+    private void AddResource(int amount)
+    {
+        if (CurrentResourceAmount.Value + amount > MaxCapacity)
+        {
+            CurrentResourceAmount.Value = MaxCapacity;
+        }
+        else CurrentResourceAmount.Value += amount;
+    }
+
     public void Tick(float tickValue)
     {
         if (!_info.IsGenerator && _currentOrderAmount.Value == 0) return;
@@ -69,16 +79,9 @@ public class Building
     {
         if (!_info.IsGenerator) _currentOrderAmount.Value--;
         CurrentResourceAmount.Value += OutputAmount;
-
-        StartProduction();
-    }
-
-    public void StartProduction()
-    {
-        if (!_info.IsGenerator && _currentOrderAmount.Value == 0) return;
-
         ResetTime();
     }
+    
 
     public void CollectResource()
     {
@@ -89,7 +92,7 @@ public class Building
             ResourceController.RequestAddResource(OutputResource, amount);
             if (_info.IsGenerator)
             {
-                StartProduction();
+                ResetTime();
             }
         }
     }
@@ -107,22 +110,53 @@ public class Building
     
     public void SkipTime(int skipAmount)
     {
-        var totalCurrentTimeLeft = (int)TimeLeft.Value + (_currentOrderAmount.Value * ProductionTime);
-        if (skipAmount >= totalCurrentTimeLeft)
+        float remainingTime = skipAmount;
+        
+        if (_info.IsGenerator)
         {
-            CurrentResourceAmount.Value += _currentOrderAmount.Value;
-            _currentOrderAmount.Value = 0;
-            TimeLeft.Value = 0;
+            int producedCount = Mathf.FloorToInt(remainingTime / ProductionTime);
+            float leftover = remainingTime % ProductionTime;
+
+            AddResource(producedCount * OutputAmount);
+            
+            if (CurrentResourceAmount.Value >= MaxCapacity)
+            {
+                TimeLeft.Value = ProductionTime;
+
+            }
+            else TimeLeft.Value = ProductionTime - leftover;
             return;
         }
         
-        int a = (skipAmount / ProductionTime); //Kac adet order tamamladigi
-        int b = skipAmount % ProductionTime; //Geriye kalan zamanin kac oldugu
-            
-        CurrentResourceAmount.Value += a;
-        _currentOrderAmount.Value -= a;
-        TimeLeft.Value = b;
+        if (_currentOrderAmount.Value <= 0) return;
+        
+        if (remainingTime >= TimeLeft.Value)
+        {
+            remainingTime -= TimeLeft.Value;
+            AddResource(OutputAmount);
+            _currentOrderAmount.Value--;
+        }
+        else
+        {
+            TimeLeft.Value -= remainingTime;
+            return;
+        }
+        
+        int completeOrders = Mathf.FloorToInt(remainingTime / ProductionTime);
+        int actualCompleted = Mathf.Min(completeOrders, _currentOrderAmount.Value);
+        remainingTime -= actualCompleted * ProductionTime;
+
+        AddResource(actualCompleted * OutputAmount);
+        _currentOrderAmount.Value -= actualCompleted;
+
+        if (_currentOrderAmount.Value > 0)
+        {
+            TimeLeft.Value = ProductionTime - remainingTime;
+        }
+        else TimeLeft.Value = ProductionTime;
+
     }
+
     
     public void SetData(BuildingData data)
     {
@@ -136,7 +170,7 @@ public class Building
         var newData = new BuildingData
         {
             currentOrderAmount = _currentOrderAmount.Value,
-            timeLeft = (int)TimeLeft.Value,
+            timeLeft = TimeLeft.Value,
             currentResourceAmount = CurrentResourceAmount.Value
         };
 
@@ -149,8 +183,8 @@ public struct BuildingData
 {
     public int currentOrderAmount;
     public int currentResourceAmount;
-    public int timeLeft;
-    public BuildingData(int currentOrderAmount, int currentResourceAmount, int timeLeft)
+    public float timeLeft;
+    public BuildingData(int currentOrderAmount, int currentResourceAmount, float timeLeft)
     {
         this.currentOrderAmount = currentOrderAmount;
         this.currentResourceAmount = currentResourceAmount;

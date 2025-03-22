@@ -34,7 +34,7 @@ public class BuildingController : ISaveable
 
     public void LoadData(Data data)
     {
-        var totalTimePassed = (int)DateTime.UtcNow.Subtract(data.LastSavedTime).TotalSeconds;
+        var totalTimePassed = DateTime.UtcNow.Subtract(data.LastSavedTime).TotalSeconds;
         foreach (var buildingData in data.BuildingDatas)    
         {
             if (_buildings.ContainsKey(buildingData.Key))
@@ -46,7 +46,7 @@ public class BuildingController : ISaveable
 
         foreach (var building in _buildings)
         {
-            building.Value.SkipTime(totalTimePassed);
+            building.Value.SkipTime(Convert.ToInt32(totalTimePassed));
         }
     }
 
