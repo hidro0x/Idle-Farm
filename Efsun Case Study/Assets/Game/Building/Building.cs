@@ -55,12 +55,9 @@ public class Building
 
     private void AddResource(int amount)
     {
-        if (CurrentResourceAmount.Value + amount > MaxCapacity)
-        {
-            CurrentResourceAmount.Value = MaxCapacity;
-        }
-        else CurrentResourceAmount.Value += amount;
+        CurrentResourceAmount.Value = Mathf.Min(CurrentResourceAmount.Value + amount, MaxCapacity);
     }
+
 
     public void Tick(float tickValue)
     {
@@ -115,16 +112,12 @@ public class Building
         if (_info.IsGenerator)
         {
             int producedCount = Mathf.FloorToInt(remainingTime / ProductionTime);
-            float leftover = remainingTime % ProductionTime;
+            int maxProducible = (MaxCapacity - CurrentResourceAmount.Value) / OutputAmount;
+            int actualProduced = Mathf.Min(producedCount, maxProducible);
 
-            AddResource(producedCount * OutputAmount);
-            
-            if (CurrentResourceAmount.Value >= MaxCapacity)
-            {
-                TimeLeft.Value = ProductionTime;
+            AddResource(actualProduced * OutputAmount);
 
-            }
-            else TimeLeft.Value = ProductionTime - leftover;
+            TimeLeft.Value = (CurrentResourceAmount.Value >= MaxCapacity) ? ProductionTime : ProductionTime - (remainingTime % ProductionTime);
             return;
         }
         
@@ -142,20 +135,17 @@ public class Building
             return;
         }
         
-        int completeOrders = Mathf.FloorToInt(remainingTime / ProductionTime);
-        int actualCompleted = Mathf.Min(completeOrders, _currentOrderAmount.Value);
-        remainingTime -= actualCompleted * ProductionTime;
+        int remainingOrders = _currentOrderAmount.Value;
+        int producibleOrders = Mathf.FloorToInt(remainingTime / ProductionTime);
+        int actualCompleted = Mathf.Min(producibleOrders, remainingOrders);
 
         AddResource(actualCompleted * OutputAmount);
         _currentOrderAmount.Value -= actualCompleted;
-
-        if (_currentOrderAmount.Value > 0)
-        {
-            TimeLeft.Value = ProductionTime - remainingTime;
-        }
-        else TimeLeft.Value = ProductionTime;
-
+        remainingTime -= actualCompleted * ProductionTime;
+        
+        TimeLeft.Value = (_currentOrderAmount.Value > 0) ? ProductionTime - remainingTime : ProductionTime;
     }
+
 
     
     public void SetData(BuildingData data)
