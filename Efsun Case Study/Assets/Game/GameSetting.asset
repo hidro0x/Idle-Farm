@@ -80,5 +80,5 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  <TickValue>k__BackingField: 1
+  <TickValue>k__BackingField: 0.1
   editStartingValues: 0
